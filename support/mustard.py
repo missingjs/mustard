@@ -6,7 +6,7 @@ import sys
 
 if len(sys.argv) < 3:
     print 'usage: python mustard.py <CMD> <MODULE>'
-    print '\t\t CMD - crun | run'
+    print '\t CMD - crun | run'
     exit()
 
 cmd = sys.argv[1]
@@ -32,12 +32,16 @@ lines.append('\n')
 
 exe_file = './' + module + '.out'
 inputs = []
+counter = 1
 for i in xrange(0, len(lines)):
     if len(lines[i].strip()) == 0:
+        print '\n===== [' + str(counter) + '] ====='
+        counter += 1
         if len(inputs) == 0:
             continue
         p = subprocess.Popen(exe_file, stdin=subprocess.PIPE)
         for line in inputs:
+            print line.strip()
             p.stdin.write(line)
         p.stdin.close()
         p.wait()
