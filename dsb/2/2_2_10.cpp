@@ -1,7 +1,7 @@
 #include <iostream>
 using namespace std;
 
-#include "../../common/array.h"
+#include "common/array.h"
 using namespace mustard;
 
 bool insert(int * arr, int len, int x);

@@ -4,6 +4,9 @@ import os
 import subprocess
 import sys
 
+BASE_PATH = os.path.dirname(os.path.realpath(sys.argv[0]))
+BASE_PATH = os.path.dirname(BASE_PATH)
+
 if len(sys.argv) < 3:
     print 'usage: python mustard.py <CMD> <MODULE>'
     print '\t CMD - crun | run'
@@ -18,7 +21,7 @@ if cmd not in cmd_supports:
     exit()
 
 if cmd == 'crun':
-    command = 'g++ -o {0}.out {1}.cpp'.format(module, module)
+    command = 'g++ -o {0}.out -I. -I{1} {2}.cpp'.format(module, BASE_PATH, module)
     code = os.system(command)
     if code != 0:
         exit()
