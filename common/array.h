@@ -39,10 +39,17 @@ void array_free(T * arr)
 template <typename T>
 void array_print(T * arr, int len)
 {
-    for (int i = 0; i < len; ++i) {
-        std::cout << arr[i] << ' ';
+    if (arr == NULL || len <= 0) {
+        std::cout << "[]\n";
+        return;
     }
-    std::cout << '\n';
+
+    std::cout << '[';
+    int before_last = len - 1;
+    for (int i = 0; i < before_last; ++i) {
+        std::cout << arr[i] << ", ";
+    }
+    std::cout << arr[before_last] << "]\n";
 }
 
 } // namespace mustard
