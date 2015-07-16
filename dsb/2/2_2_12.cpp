@@ -28,6 +28,7 @@ int remove_x(int * arr, int len, int x)
         return 0;
     }
 
+    /*
     int k = 0;
     for (int i = 0; i < len; ++i) {
         if (arr[i] != x) {
@@ -40,4 +41,16 @@ int remove_x(int * arr, int len, int x)
     }
 
     return len - k;
+    */
+
+    int p = 0;
+    for (int i = 0; i < len; ++i) {
+        if (arr[i] != x) {
+            if (i != p) {
+                arr[p] = arr[i];
+            }
+            ++p;
+        }
+    }
+    return p;
 }
