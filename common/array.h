@@ -31,6 +31,18 @@ T * array_read(int len)
 }
 
 template <typename T>
+T * array_n_read(int & len)
+{
+    if (!(std::cin >> len)) {
+        return NULL;
+    }
+    if (len < 0) {
+        return NULL;
+    }
+    return array_read<T>(len);
+}
+
+template <typename T>
 void array_free(T * arr)
 {
     delete[] arr;
