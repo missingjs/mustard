@@ -4,6 +4,7 @@ using namespace mustard;
 
 int * intersection_1(const int * a, int len_a, const int * b, int len_b, int & len_c);
 int * intersection_override(int * a, int len_a, const int * b, int len_b, int & len_c);
+int * intersection_seq(const int * a, int len_a, const int * b, int len_b, int & len_c);
 
 int main()
 {
@@ -26,6 +27,32 @@ int main()
     }
 
     return 0;
+}
+
+int * intersection_seq(const int * a, int len_a, const int * b, int len_b, int & len_c)
+{
+    if (a == NULL || len_a < 0 || b == NULL || len_b < 0) {
+        len_c = 0;
+        return NULL;
+    }
+
+    int ai = 0, bi = 0;
+    len_c = len_a < len_b ? len_a : len_b;
+    int ci = 0;
+    int * c = new int[len_c];
+    for (; ai < len_a && bi < len_b; ) {
+        if (a[ai] == b[bi]) {
+            c[ci++] = a[ai];
+            ++ai;
+            ++bi;
+        } else if (a[ai] < b[bi]) {
+            ++ai;
+        } else {
+            ++bi;
+        }
+    }
+    len_c = ci;
+    return c;
 }
 
 int * intersection_override(int * a, int len_a, const int * b, int len_b, int & len_c)
