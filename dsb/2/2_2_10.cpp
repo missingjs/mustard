@@ -1,49 +1,31 @@
 #include <iostream>
-using namespace std;
-
+#include <cstring>
 #include "common/array.h"
 using namespace mustard;
 
-bool insert(int * arr, int len, int x);
+// !!!
+// arr数组内元素递增有序排列，将x插入其中
+// 返回插入x后数组的长度
+int insert(int * arr, int len, int x);
 
 int main()
 {
-    int len = 0;
-    cin >> len;
-    
-    int * arr = array_read<int>(len, len + 1);
+    int *arr = NULL, len = 0;
+    arr = array_n_read<int>(len);
+
+    if (len > 0) {
+        int * new_arr = new int[len+1];
+        memcpy(new_arr, arr, len * sizeof(int));
+        array_free(arr);
+        arr = new_arr;
+    }
 
     int x = 0;
-    cin >> x;
+    std::cin >> x;
 
-    bool r = insert(arr, len, x);
-    if (r) {
-        ++len;
-        array_print(arr, len);
-    } else {
-        cout << "NO insert" << endl;
-    }
+    len = insert(arr, len, x);
 
-    array_free(arr);
+    array_print(arr, len);
+
     return 0;
-}
-
-bool insert(int * arr, int len, int x)
-{
-    if (arr == NULL || len < 0) {
-        return false;
-    }
-
-    int i = 0;
-    for (; i < len; ++i) {
-        if (arr[i] >= x) {
-            break;
-        }
-    }
-
-    for (int j = len - 1; j >= i; --j) {
-        arr[j + 1] = arr[j];
-    }
-    arr[i] = x;
-    return true;
 }
