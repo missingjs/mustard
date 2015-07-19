@@ -21,7 +21,7 @@ if cmd not in cmd_supports:
     exit()
 
 if cmd == 'crun':
-    command = 'g++ -o {0}.out -I. -I{1} {2}.cpp'.format(module, BASE_PATH, module)
+    command = 'g++ -o {0}.out -I. -I{1} {0}.cpp {0}.test.cpp'.format(module, BASE_PATH)
     code = os.system(command)
     if code != 0:
         exit()
