@@ -49,7 +49,7 @@ void array_free(T * arr)
 }
 
 template <typename T>
-void array_print(T * arr, int len)
+void array_print(const T * arr, int len)
 {
     if (arr == NULL || len <= 0) {
         std::cout << "[]\n";
@@ -64,6 +64,56 @@ void array_print(T * arr, int len)
     std::cout << arr[before_last] << "]\n";
 }
 
-} // namespace mustard
+
+namespace array {
+
+template <typename T>
+T * read(int size, int capacity)
+{
+    return ::mustard::array_read<T>(size, capacity);
+}
+
+template<typename T>
+T * read(int len)
+{
+    return ::mustard::array_read<T>(len);
+}
+
+template <typename T>
+T * n_read(int & len)
+{
+    return ::mustard::array_n_read<T>(len);
+}
+
+template <typename T>
+void free(T * arr)
+{
+    ::mustard::array_free(arr);
+}
+
+template <typename T>
+void print(const T * arr, int len)
+{
+    ::mustard::array_print(arr, len);
+}
+
+template <typename T>
+T * clone(const T * arr, int len)
+{
+    if (arr == NULL) {
+        return NULL;
+    }
+
+    T * new_arr = new T[len];
+    for (int i = 0; i < len; ++i) {
+        new_arr[i] = arr[i];
+    }
+
+    return new_arr;
+}
+
+} // namespace ::mustard::array
+
+} // namespace ::mustard
 
 #endif
