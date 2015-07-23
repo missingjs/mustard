@@ -1,8 +1,10 @@
+// @brief: 从顺序表中删除重复元素，并使剩余元素间的相对次序保持不变
+// @return: 处理后数组长度
+int unify(int * arr, int len);
+
 #include <iostream>
 #include "common/array.h"
 using namespace mustard;
-
-int unify(int * arr, int len);
 
 int main()
 {
@@ -19,27 +21,3 @@ int main()
     return 0;
 }
 
-int unify(int * arr, int len)
-{
-    if (arr == NULL || len <= 0) {
-        return 0;
-    }
-
-    int i = 0, j = 1;
-    while (j < len) {
-        int k = 0;
-        for (; k <= i; ++k) {
-            if (arr[k] == arr[j]) {
-                break;
-            }
-        }
-        if (k > i) {
-            if (k != j) {
-                arr[k] = arr[j];
-            }
-            ++i;
-        }
-        ++j;
-    }
-    return (i+1);
-}

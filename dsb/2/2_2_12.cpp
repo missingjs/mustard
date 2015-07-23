@@ -1,9 +1,10 @@
-#include <iostream>
+// @brief: 从顺序表中删除所有值为x的元素, 要求空间复杂度为O(1)
+// @return: 返回处理后数的长度
+int remove_x(int * arr, int len, int x);
 
+#include <iostream>
 #include "common/array.h"
 using namespace mustard;
-
-int remove_x(int * arr, int len, int x);
 
 int main()
 {
@@ -22,35 +23,3 @@ int main()
     return 0;
 }
 
-int remove_x(int * arr, int len, int x)
-{
-    if (arr == NULL || len <= 0) {
-        return 0;
-    }
-
-    /*
-    int k = 0;
-    for (int i = 0; i < len; ++i) {
-        if (arr[i] != x) {
-            if (k > 0) {
-                arr[i-k] = arr[i];
-            }
-        } else {
-            ++k;
-        }
-    }
-
-    return len - k;
-    */
-
-    int p = 0;
-    for (int i = 0; i < len; ++i) {
-        if (arr[i] != x) {
-            if (i != p) {
-                arr[p] = arr[i];
-            }
-            ++p;
-        }
-    }
-    return p;
-}

@@ -1,10 +1,22 @@
+// @brief: 用顺序表表示集合，实现集合求交集运算
+
+// a,b乱序
+// @return: 新数组
+int * intersect_new(const int * a, int len_a, const int * b, int len_b, int & len_c);
+
+// a,b乱序，利用a的空间存储结果
+void intersect(int * a, int len_a, const int * b, int len_b, int & len_c);
+
+// a,b升序，结果存于新数组
+int * seq_intersect_new(const int * a, int len_a, const int * b, int len_b, int & len_c);
+
+// a,b升序，利用a的空间存储结果
+void seq_intersect(int * a, int len_a, const int * b, int len_b, int & len_c);
+
 #include <iostream>
+#include <algorithm>
 #include "common/array.h"
 using namespace mustard;
-
-int * intersection_1(const int * a, int len_a, const int * b, int len_b, int & len_c);
-int * intersection_override(int * a, int len_a, const int * b, int len_b, int & len_c);
-int * intersection_seq(const int * a, int len_a, const int * b, int len_b, int & len_c);
 
 int main()
 {
@@ -14,99 +26,35 @@ int main()
     int *b = NULL, len_b = 0;
     b = array_n_read<int>(len_b);
 
-    int *c = NULL, len_c = 0;
-    c = intersection_override(a, len_a, b, len_b, len_c);
+    int len_c = 0;
+    int * c = intersect_new(a, len_a, b, len_b, len_c);
+    array::print(c, len_c);
+    array::free(c);
 
-    array_print(c, len_c);
+    int * old_a = array::clone(a, len_a);
 
-    array_free(a);
-    array_free(b);
+    int len_d = 0;
+    intersect(a, len_a, b, len_b, len_d);
+    array::print(a, len_d);
+    array::free(a);
 
-    if (c != a && c != b) {
-        array_free(c);
-    }
+    a = old_a;
+
+    std::sort(a, a + len_a);
+    std::sort(b, b + len_b);
+
+    int len_e = 0;
+    int * e = seq_intersect_new(a, len_a, b, len_b, len_e);
+    array::print(e, len_e);
+    array::free(e);
+
+    int len_f = 0;
+    seq_intersect(a, len_a, b, len_b, len_f);
+    array::print(a, len_f);
+
+    array::free(a);
+    array::free(b);
 
     return 0;
-}
-
-int * intersection_seq(const int * a, int len_a, const int * b, int len_b, int & len_c)
-{
-    if (a == NULL || len_a < 0 || b == NULL || len_b < 0) {
-        len_c = 0;
-        return NULL;
-    }
-
-    int ai = 0, bi = 0;
-    len_c = len_a < len_b ? len_a : len_b;
-    int ci = 0;
-    int * c = new int[len_c];
-    for (; ai < len_a && bi < len_b; ) {
-        if (a[ai] == b[bi]) {
-            c[ci++] = a[ai];
-            ++ai;
-            ++bi;
-        } else if (a[ai] < b[bi]) {
-            ++ai;
-        } else {
-            ++bi;
-        }
-    }
-    len_c = ci;
-    return c;
-}
-
-int * intersection_override(int * a, int len_a, const int * b, int len_b, int & len_c)
-{
-    if (a == NULL || len_a < 0 || b == NULL || len_b < 0) {
-        len_c = 0;
-        return a;
-    }
-
-    int ai = 0, aj = 0;
-    while (aj < len_a) {
-        int bi = 0;
-        for (; bi < len_b && a[aj] != b[bi]; ++bi)
-            ;
-        if (bi < len_b) {
-            if (ai != aj) {
-                a[ai] = a[aj];
-            }
-            ++ai;
-        }
-        ++aj;
-    }
-
-    len_c = ai;
-
-    return a;
-}
-
-int * intersection_1(const int * a, int len_a, const int * b, int len_b, int & len_c)
-{
-    if (a == NULL || len_a < 0 || b == NULL || len_b < 0) {
-        len_c = 0;
-        return NULL;
-    }
-
-    int L = len_a > len_b ? len_b : len_a;
-    int * c = new int[L];
-
-    int k = 0;
-    for (int i = 0; i < len_a; ++i) {
-        int j = 0;
-        for (; j < len_b; ++j) {
-            if (a[i] == b[j]) {
-                break;
-            }
-        }
-        if (j < len_b) {
-            c[k] = a[i];
-            ++k;
-        }
-    }
-
-    len_c = k;
-
-    return c;
 }
 

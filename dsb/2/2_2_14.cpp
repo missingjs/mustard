@@ -1,8 +1,9 @@
+// @brief: 顺序表L，元素为整形数据，将L中所有小于0元素放在前半部分，大于等于0元素放于后半部
+void z_partition(int * arr, int len);
+
 #include <iostream>
 #include "common/array.h"
 using namespace mustard;
-
-void z_partition(int * arr, int len);
 
 int main()
 {
@@ -20,25 +21,3 @@ int main()
     return 0;
 }
 
-void z_partition(int * arr, int len)
-{
-    if (arr == NULL || len <= 0) {
-        return;
-    }
-
-    int i = 0, j = len - 1;
-    int temp = 0;
-    while (i < j) {
-        while (i < j && arr[i] < 0) {
-            ++i;
-        }
-        while (i < j && arr[j] >= 0) {
-            --j;
-        }
-        if (i < j) {
-            temp = arr[i];
-            arr[i] = arr[j];
-            arr[j] = temp;
-        }
-    }
-}
