@@ -87,6 +87,14 @@ node<T> * clone(node<T> * n)
     return head;
 }
 
+template <typename T>
+node<T> * add_head(node<T> * n)
+{
+    node<T> * head = new node<T>();
+    head->next = n;
+    return head;
+}
+
 } // namespace ::mustard::slist
 
 } // namespace ::mustard
