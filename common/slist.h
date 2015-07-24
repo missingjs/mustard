@@ -64,7 +64,7 @@ void print(node<T> * n)
     while (p) {
         std::cout << p->data;
         if (p->next) {
-            std::cout << ", "
+            std::cout << ", ";
         }
         p = p->next;
     }
