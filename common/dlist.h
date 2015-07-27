@@ -98,6 +98,26 @@ node<T> * add_head(node<T> * n)
     return head;
 }
 
+template <typename T>
+node<T> * from_array(const T * arr, int len)
+{
+    if (arr == NULL || len <= 0) {
+        return NULL;
+    }
+
+    node<T> head, *tail = &head;
+
+    for (int i = 0; i < len; ++i) {
+        node<T> * n = new node<T>(arr[i]);
+        n->prev = tail;
+        tail->next = n;
+        tail = n;
+    }
+
+    head.next->prev = NULL;
+    return head.next;
+}
+
 } // namespace ::mustard::dlist
 
 } // namespace ::mustard
