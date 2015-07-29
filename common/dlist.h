@@ -50,10 +50,14 @@ node<T> * read()
 template <typename T>
 void free(node<T> * head)
 {
-    while (head) {
-        node<T> * p = head;
-        head = head->next;
+    node<T> * t = head;
+    while (t) {
+        node<T> * p = t;
+        t = t->next;
         delete p;
+        if (t == head) {
+            break;
+        }
     }
 }
 
@@ -64,10 +68,13 @@ void print(node<T> * n)
     node<T> * p = n;
     while (p) {
         std::cout << p->data;
-        if (p->next) {
+        if (p->next && p->next != n) {
             std::cout << ", ";
         }
         p = p->next;
+        if (p == n) {
+            break;
+        }
     }
     std::cout << "]\n";
 }
@@ -76,7 +83,7 @@ template <typename T>
 node<T> * clone(node<T> * n)
 {
     node<T> *head = NULL, *last = NULL;
-    for (node<T> * p = n; p; p = p->next) {
+    for (node<T> * p = n; p; ) {
         node<T> * new_n = new node<T>(p->data);
         if (last == NULL) {
             head = last = new_n;
@@ -84,6 +91,13 @@ node<T> * clone(node<T> * n)
             last->next = new_n;
             new_n->prev = last;
             last = new_n;
+        }
+
+        p = p->next;
+        if (p == n) { // circular list
+            last->next = head;  // clone as circular list too
+            head->prev = last;
+            break;
         }
     }
     return head;
@@ -133,6 +147,19 @@ node<T> * make_circular(node<T> * h)
     h->prev = p;
 
     return p;
+}
+
+template <typename T>
+node<T> * de_circular(node<T> * tail)
+{
+    if (tail == NULL) {
+        return NULL;
+    }
+
+    node<T> * head = tail->next;
+    tail->next = NULL;
+    head->prev = NULL;
+    return head;
 }
 
 } // namespace ::mustard::dlist
