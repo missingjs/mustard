@@ -125,7 +125,7 @@ node<T> * make_circular(node<T> * h)
 
     p->next = h;
 
-    return h;
+    return p;
 }
 
 } // namespace ::mustard::slist

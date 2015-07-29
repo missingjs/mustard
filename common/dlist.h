@@ -132,7 +132,7 @@ node<T> * make_circular(node<T> * h)
     p->next = h;
     h->prev = p;
 
-    return h;
+    return p;
 }
 
 } // namespace ::mustard::dlist
