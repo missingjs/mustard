@@ -118,6 +118,23 @@ node<T> * from_array(const T * arr, int len)
     return head.next;
 }
 
+template <typename T>
+node<T> * make_circular(node<T> * h)
+{
+    if (h == NULL) {
+        return NULL;
+    }
+
+    node<T> * p = h;
+    for (; p->next != NULL; p = p->next)
+        ;;
+
+    p->next = h;
+    h->prev = p;
+
+    return h;
+}
+
 } // namespace ::mustard::dlist
 
 } // namespace ::mustard
