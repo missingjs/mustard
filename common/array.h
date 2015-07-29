@@ -5,8 +5,10 @@
 
 namespace mustard {
 
+namespace array {
+
 template <typename T>
-T * array_read(int size, int capacity)
+T * read_n(int size, int capacity)
 {
     if (capacity < size) {
         capacity = size;
@@ -25,13 +27,13 @@ T * array_read(int size, int capacity)
 }
 
 template <typename T>
-T * array_read(int len)
+T * read_n(int len)
 {
-    return array_read<T>(len, len);
+    return read_n<T>(len, len);
 }
 
 template <typename T>
-T * array_n_read(int & len)
+T * read(int & len)
 {
     if (!(std::cin >> len)) {
         return NULL;
@@ -39,17 +41,17 @@ T * array_n_read(int & len)
     if (len < 0) {
         return NULL;
     }
-    return array_read<T>(len);
+    return ::mustard::array::read_n<T>(len);
 }
 
 template <typename T>
-void array_free(T * arr)
+void free(T * arr)
 {
     delete[] arr;
 }
 
 template <typename T>
-void array_print(const T * arr, int len)
+void print(const T * arr, int len)
 {
     if (arr == NULL || len <= 0) {
         std::cout << "[]\n";
@@ -62,39 +64,6 @@ void array_print(const T * arr, int len)
         std::cout << arr[i] << ", ";
     }
     std::cout << arr[before_last] << "]\n";
-}
-
-
-namespace array {
-
-template <typename T>
-T * read(int size, int capacity)
-{
-    return ::mustard::array_read<T>(size, capacity);
-}
-
-template<typename T>
-T * read(int len)
-{
-    return ::mustard::array_read<T>(len);
-}
-
-template <typename T>
-T * n_read(int & len)
-{
-    return ::mustard::array_n_read<T>(len);
-}
-
-template <typename T>
-void free(T * arr)
-{
-    ::mustard::array_free(arr);
-}
-
-template <typename T>
-void print(const T * arr, int len)
-{
-    ::mustard::array_print(arr, len);
 }
 
 template <typename T>
