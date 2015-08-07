@@ -3,41 +3,6 @@
 
 #include "_expr_common.cpp"
 
-int _op_prior_table[7][7] = {
-    //    +  -  *  /  (  )  #
-/* + */ { 1, 1,-1,-1,-1, 1, 1 },
-/* - */ { 1, 1,-1,-1,-1, 1, 1 },
-/* * */ { 1, 1, 1, 1,-1, 1, 1 },
-/* / */ { 1, 1, 1, 1,-1, 1, 1 },
-/* ( */ {-1,-1,-1,-1,-1, 0,-2 },
-/* ) */ {-2,-2,-2,-2,-2,-2,-2 },
-/* # */ {-1,-1,-1,-1,-1,-2, 0 }
-};
-
-int _op_index(char c)
-{
-    switch (c) {
-        case '+': return 0;
-        case '-': return 1;
-        case '*': return 2;
-        case '/': return 3;
-        case '(': return 4;
-        case ')': return 5;
-        case '#': return 6;
-        default : return -1;
-    }
-}
-
-int op_cmp(char c1, char c2)
-{
-    int i1 = _op_index(c1);
-    int i2 = _op_index(c2);
-    if (i1 < 0 || i2 < 0) {
-        exit(0);
-    }
-    return _op_prior_table[i1][i2];
-}
-
 int eval_in(const std::vector<token> & _tokens)
 {
     token terminal;

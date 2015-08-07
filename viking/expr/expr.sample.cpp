@@ -232,14 +232,45 @@ int eval_post(const std::vector<token> & tokens)
     return num_stk.top();
 }
 
+struct expr_node
+{
+    token::e_type type;
+    int num;
+    char op;
+    expr_node * e1;
+    expr_node * e2;
+
+    expr_node(int num)
+        : type(token::NUM), num(num), op(0), e1(NULL), e2(NULL)
+    {}
+
+    expr_node(char op, expr_node * e1 = NULL, expr_node * e2 = NULL)
+        : type(token::OP), num(0), op(op), e1(e1), e2(e2)
+    {}
+
+    ~expr_node()
+    {
+        delete e1;
+        delete e2;
+    }
+};
+
+expr_node * make_tree_pre(const std::vector<token> & tokens)
+{
+
+}
+
 void expr_process(const char * type, const char * expr)
 {
     std::vector<token> tokens;
     parse(expr, tokens);
 
     int value = 0;
+    expr_node * root = NULL;
+
     if (strcmp(type, "PRE") == 0) {
         value = eval_pre(tokens);
+        root = make_tree_pre(tokens);
     } else if (strcmp(type, "IN") == 0) {
         value = eval_in(tokens);
     } else if (strcmp(type, "POST") == 0) {
