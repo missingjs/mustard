@@ -65,9 +65,85 @@ int eval_pre(const std::vector<token> & tokens)
     return result;
 }
 
+namespace {
+
+typedef std::vector<token>::const_iterator cvi_t;
+
+int _e(cvi_t & i)
+{
+    if (i->type == token::NUM) {
+        int num = i->d.num;
+        ++i;
+        return num;
+    } else {
+        char op = i->d.op;
+        ++i;
+        int n1 = _e(i);
+        int n2 = _e(i);
+        return eval(n1, op, n2);
+    }
+}
+
+int r_eval(const std::vector<token> & tokens)
+{
+    cvi_t i = tokens.begin();
+    return _e(i);
+}
+
+struct _ne
+{
+    int * ret;
+    int state;
+    char op;
+    int n1, n2;
+    _ne(int * ret)
+        : ret(ret), state(0), op(0), n1(0), n2(0)
+    {}
+};
+
+int nr_eval(const std::vector<token> & tokens)
+{
+    cvi_t i = tokens.begin();
+    int value = 0;
+    std::stack<_ne> stk;
+    stk.push(_ne(&value));
+
+    while (!stk.empty()) {
+        _ne & top = stk.top();
+        switch (top.state) {
+            case 0:
+                if (i->type == token::NUM) {
+                    *top.ret = i->d.num;
+                    stk.pop();
+                    ++i;
+                } else {
+                    top.op = i->d.op;
+                    ++i;
+                    top.state = 1;
+                    stk.push(_ne(&top.n1));
+                }
+                break;
+            case 1:
+                top.state = 2;
+                stk.push(_ne(&top.n2));
+                break;
+            case 2:
+                *top.ret = eval(top.n1, top.op, top.n2);
+                stk.pop();
+                break;
+        }
+    }
+
+    return value;
+}
+
+}
+
 int pre_eval(const char * expr)
 {
     std::vector<token> tokens;
     parse(expr, tokens);
-    return eval_pre(tokens);
+    // return eval_pre(tokens);
+    // return r_eval(tokens);
+    return nr_eval(tokens);
 }
