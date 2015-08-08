@@ -47,7 +47,9 @@ for i in xrange(0, len(lines)):
             print line.strip()
             p.stdin.write(line)
         p.stdin.close()
-        p.wait()
+        exit_code = p.wait()
+        if exit_code != 0:
+            print '[warn] exit code: %d' % (exit_code,)
         inputs = []
     else:
          inputs.append(lines[i])
