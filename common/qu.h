@@ -10,12 +10,12 @@ class cyc_queue
 {
     const int length;
     T  *data;
-    int front, rear;
+    int pfront, rear;
 
 public:
     cyc_queue(int len)
-        : length(len), data(new T[len])
-        , front(0), rear(0)
+        : length(len + 1), data(new T[len + 1])
+        , pfront(0), rear(0)
     {}
 
     ~cyc_queue()
@@ -25,32 +25,32 @@ public:
 
     int capacity() const
     {
-        return length;
+        return length - 1;
     }
 
     int size() const
     {
-        return (rear - front + length) % length;
+        return (rear - pfront + length) % length;
     }
 
     bool empty() const
     {
-        return front == rear;
+        return pfront == rear;
     }
 
     bool full() const
     {
-        return _next(rear) == front;
+        return _next(rear) == pfront;
     }
 
     T & front()
     {
-        return data[front];
+        return data[pfront];
     }
 
     T front() const
     {
-        return data[front];
+        return data[pfront];
     }
 
     void push(const T & t)
@@ -64,7 +64,7 @@ public:
     void pop()
     {
         if (!empty()) {
-            front = _next(front);
+            pfront = _next(pfront);
         }
     }
 
