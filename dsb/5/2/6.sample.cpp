@@ -28,9 +28,11 @@ char * replace(const char * s, int i, int j, const char * t)
     strncpy(new_str, s, i - 1);
     strncpy(new_str + i - 1, t, tsize);
 
-    for (int k = i + j - 1, m = i - 1 + tsize; k < size; ++k, ++m) {
+    int m = i - 1 + tsize;
+    for (int k = i + j - 1; k < size; ++k, ++m) {
         new_str[m] = s[k];
     }
+    new_str[m] = 0;
 
     return new_str;
 }
