@@ -21,6 +21,11 @@ if cmd not in cmd_supports:
     exit()
 
 if cmd == 'crun':
+    test_file = module + '.test.cpp'
+    if not os.path.exists(test_file):
+        code = os.system('ln -s ' + module + '.sample.cpp ' + test_file)
+        if code != 0:
+            exit()
     command = 'g++ -o {0}.out -I. -I{1} {0}.cpp {0}.test.cpp'.format(module, BASE_PATH)
     code = os.system(command)
     if code != 0:
