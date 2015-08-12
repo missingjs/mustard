@@ -7,6 +7,14 @@ namespace mustard {
 
 namespace xstring {
 
+char * read(int & len);
+
+char * read()
+{
+    int len = 0;
+    return read(len);
+}
+
 char * read(int & len)
 {
     if (!(std::cin >> len) || len < 0) {
