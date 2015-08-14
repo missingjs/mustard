@@ -25,7 +25,11 @@ char * read(int & len)
     str[len] = 0;
 
     for (int i = 0; i < len; ++i) {
-        std::cin >> str[i];
+        char c = 0;
+        do {
+            std::cin.get(c);
+        } while (c == '\r' || c == '\n');
+        str[i] = c;
     }
 
     return str;
