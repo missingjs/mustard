@@ -2,6 +2,8 @@
 #define MUSTARD_XSTRING_H 1
 
 #include <iostream>
+#include <cstring>
+#include <string>
 
 namespace mustard {
 
@@ -33,6 +35,15 @@ char * read(int & len)
     }
 
     return str;
+}
+
+char * read_line()
+{
+    std::string line;
+    std::getline(std::cin, line);
+    char * rs = new char[line.size() + 1];
+    strcpy(rs, line.c_str());
+    return rs;
 }
 
 void free(const char * str)
