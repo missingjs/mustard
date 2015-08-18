@@ -5,42 +5,23 @@ namespace mustard {
 namespace matrix {
 
 template <typename T>
-sparse_matrix<T>::tup::tup(int r, int c, const T & d)
-    : r(r), c(c), d(d), next(NULL)
-{
-}
-
-template <typename T>
 const T sparse_matrix<T>::_default_value = T();
 
 template <typename T>
 sparse_matrix<T>::sparse_matrix(int row, int col)
-    : _data(), _row(row), _col(col), _num_elements(0)
+    : _data(), _row(row), _col(col)
 {
 }
 
 template <typename T>
 sparse_matrix<T>::~sparse_matrix()
 {
-    tup * p = _data.next;
-    while (p) {
-        tup * t = p;
-        p = p->next;
-        delete t;
-    }
 }
 
 template <typename T>
 sparse_matrix<T>::sparse_matrix(const sparse_matrix<T> & m)
-    : _data(), _row(m._row), _col(m._col), _num_elements(m._num_elements)
+    : _data(_data), _row(m._row), _col(m._col)
 {
-    tup *tail = &_data, *p = m._data.next;
-    while (p) {
-        tup * n = new tup(p->r, p->c, p->d);
-        tail->next = n;
-        tail = n;
-        p = p->next;
-    }
 }
 
 template <typename T>
@@ -54,10 +35,9 @@ sparse_matrix<T> & sparse_matrix<T>::operator =(const sparse_matrix<T> & m)
 template <typename T>
 void sparse_matrix<T>::swap(sparse_matrix<T> & m)
 {
-    std::swap(_data, m._data);
+    _data.swap(m._data);
     std::swap(_row, m._row);
     std::swap(_col, m._col);
-    std::swap(_num_elements, m._num_elements);
 }
 
 template <typename T>
@@ -130,11 +110,13 @@ template <typename T>
 typename sparse_matrix<T>::tup *
 sparse_matrix<T>::find(int row, int col) const
 {
-    tup * p = _data.next;
-    while (p && (p->r != row || p->c != col)) {
-        p = p->next;
+    std::vector<tup>::const_iterator i = _data.begin(), e = _data.end();
+    for (; i != e; ++i) {
+        if (i->r == row && i->c == col) {
+            return &(*i);
+        }
     }
-    return p;
+    return NULL;
 }
 
 template <typename T>
@@ -144,10 +126,7 @@ void sparse_matrix<T>::set(int row, int col, const T & t)
     if (p) {
         p->d = t;
     } else {
-        tup * n = new tup(row, col, t);
-        n->next = _data.next;
-        _data.next = n;
-        ++_num_elements;
+        _data.push_back(n(row, col, t));
     }
 }
 
@@ -175,11 +154,7 @@ template <typename T>
 void sparse_matrix<T>::get_elements(
         std::vector<tup> & elements) const
 {
-    tup * p = _data.next;
-    while (p) {
-        elements.push_back(*p);
-        p = p->next;
-    }
+    elements.insert(elements.end(), _data.begin(), _data.end());
 }
 
 template <typename T>

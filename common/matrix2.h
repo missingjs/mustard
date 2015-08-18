@@ -97,23 +97,22 @@ template <typename T>
 class sparse_matrix
 {
 public:
+
     struct tup
     {
         int r;
         int c;
         T   d;
-        tup * next;
-
-        tup(int r = 0, int c = 0, const T & d = T());
+        tup(int r = 0, int c = 0, const T & d = T())
+            : r(r), c(c), d(d)
+        {}
     };
 
 private:
 
-    tup _data;
+    std::vector<tup> _data;
 
     int _row, _col;
-
-    int _num_elements;
 
     static const T _default_value;
 
@@ -131,7 +130,7 @@ public:
 
     int col() const { return _col; }
 
-    int num_elements() const { return _num_elements; }
+    int num_elements() const { return (int) _data.size() }
 
     void get_elements(std::vector<tup> & elements) const;
 
