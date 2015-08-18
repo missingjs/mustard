@@ -130,7 +130,7 @@ public:
 
     int col() const { return _col; }
 
-    int num_elements() const { return (int) _data.size() }
+    int num_elements() const { return (int) _data.size(); }
 
     void get_elements(std::vector<tup> & elements) const;
 
@@ -191,7 +191,7 @@ public:
 
 private:
 
-    tup * find(int row, int col) const;
+    const tup * find(int row, int col) const;
 
     void set(int row, int col, const T & t);
 

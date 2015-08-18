@@ -107,10 +107,10 @@ T sparse_matrix<T>::_const_matrix_row::operator [](int i) const
 }
 
 template <typename T>
-typename sparse_matrix<T>::tup *
+const typename sparse_matrix<T>::tup *
 sparse_matrix<T>::find(int row, int col) const
 {
-    std::vector<tup>::const_iterator i = _data.begin(), e = _data.end();
+    typename std::vector<tup>::const_iterator i = _data.begin(), e = _data.end();
     for (; i != e; ++i) {
         if (i->r == row && i->c == col) {
             return &(*i);
@@ -122,18 +122,18 @@ sparse_matrix<T>::find(int row, int col) const
 template <typename T>
 void sparse_matrix<T>::set(int row, int col, const T & t)
 {
-    tup * p = find(row, col);
+    tup * p = const_cast<tup*>(find(row, col));
     if (p) {
         p->d = t;
     } else {
-        _data.push_back(n(row, col, t));
+        _data.push_back(tup(row, col, t));
     }
 }
 
 template <typename T>
 T sparse_matrix<T>::get(int row, int col) const
 {
-    tup * p = find(row, col);
+    const tup * p = find(row, col);
     return p ? p->d : _default_value;
 }
 
