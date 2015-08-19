@@ -99,7 +99,7 @@ common_matrix<T>::operator[] (int row) const
 template <typename T>
 T & common_matrix<T>::d(int r, int c)
 {
-    return _data[r * _row + c];
+    return _data[r * _col + c];
 }
 
 template <typename T>
@@ -130,7 +130,7 @@ std::ostream & operator<< (std::ostream & out, const common_matrix<T> & m)
 }
 
 template <typename T>
-common_matrix<T> * read()
+common_matrix<T> * read_common_matrix()
 {
     int row = 0, col = 0;
     std::cin >> row >> col;
