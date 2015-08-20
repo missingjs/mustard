@@ -41,6 +41,9 @@ lines.append('\n')
 exe_file = './' + module + '.out'
 inputs = []
 counter = 1
+lib_key = 'LD_LIBRARY_PATH'
+if lib_key not in os.environ:
+    os.environ[lib_key] = '';
 os.environ['LD_LIBRARY_PATH'] += (':'+BASE_PATH+'/common')
 print os.environ['LD_LIBRARY_PATH']
 for i in xrange(0, len(lines)):
