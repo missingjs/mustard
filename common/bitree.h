@@ -107,6 +107,9 @@ node<T> * read_hierarchy()
     return NULL;
 }
 
+template <>
+node<char> * read_hierarchy();
+
 template <typename T>
 node<T> * _build_pre_in_order(
         const T * bpre, const T * epre, 
