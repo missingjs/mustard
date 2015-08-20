@@ -234,11 +234,6 @@ node<T> * read(format_type type = HIERARCHY_FORMAT)
 template <typename T>
 void print_parent_child(node<T> * root)
 {
-    if (!root) {
-        std::cout << "empty tree\n";
-        return;
-    }
-
     std::cout << root->data << '\n';
 
     std::queue<node<T>*> qu;
@@ -282,6 +277,11 @@ void print_hierarchy(node<T> * root)
 template <typename T>
 void print(node<T> * root, format_type type = HIERARCHY_FORMAT)
 {
+    if (!root) {
+        std::cout << "[empty bitree]\n";
+        return;
+    }
+
     if (type == PARENT_CHILD_FORMAT) {
         print_parent_child(root);
     } else if (type == HIERARCHY_FORMAT) {

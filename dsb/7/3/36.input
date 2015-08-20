@@ -1,0 +1,20 @@
+A(B(D,E),C(F,G))
+D E
+
+A(B(D,E),C(F,G))
+D G
+
+A(B(D,E),C(F,G))
+B E
+
+A(B(D,E),C(F,G))
+F A
+
+A(B(D,E),C(F,G))
+C X
+
+A(B(D(H,I),E),C(F(,J),G))
+J G
+
+A(B(D(H,I),E(K,)),C(F(,J),G(,L)))
+H E
