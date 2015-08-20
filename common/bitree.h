@@ -215,7 +215,7 @@ node<T> * read_in_post_order()
 }
 
 template <typename T>
-node<T> * read(format_type type)
+node<T> * read(format_type type = HIERARCHY_FORMAT)
 {
     if (type == PARENT_CHILD_FORMAT) {
         return read_parent_child<T>();
@@ -280,7 +280,7 @@ void print_hierarchy(node<T> * root)
 }
 
 template <typename T>
-void print(node<T> * root, format_type type)
+void print(node<T> * root, format_type type = HIERARCHY_FORMAT)
 {
     if (type == PARENT_CHILD_FORMAT) {
         print_parent_child(root);
