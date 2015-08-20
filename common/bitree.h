@@ -45,7 +45,13 @@ enum format_type
        represents a tree, root is 'A', left child is 'B', and right child is 'C'
      */
 
-    HIERARCHY_FORMAT     // eg: A(B(C,D),)   (no blank)
+    HIERARCHY_FORMAT,    // eg: A(B(C,D),)   (no blank)
+
+
+    PRE_IN_ORDER_FORMAT,    // num-nodes, pre-order and in-order sequence
+
+    IN_POST_ORDER_FORMAT,   // num-nodes, in-order and post-order sequence
+
 };
 
 template <typename T>
@@ -102,12 +108,120 @@ node<T> * read_hierarchy()
 }
 
 template <typename T>
+node<T> * _build_pre_in_order(
+        const T * bpre, const T * epre, 
+        const T * bin, const T * ein)
+{
+    if (bpre == epre) {
+        return NULL;
+    }
+
+    const T * p = bin;
+    while (*p != *bpre) {
+        ++p;
+    }
+
+    int left_size = p - bin;
+
+    node<T> * n = new node<T>(*bpre);
+
+    n->lc = _build_pre_in_order(
+            bpre + 1, bpre + 1 + left_size, bin, p);
+    n->rc = _build_pre_in_order(
+            bpre + 1 + left_size, epre, p + 1, ein);
+
+    return n;
+}
+
+template <typename T>
+void _read_elements_seq(int & n, T * & s1, T * & s2)
+{
+    std::cin >> n;
+    if (n <= 0) {
+        n = 0;
+        return;
+    }
+
+    s1 = new T[n];
+    for (int i = 0; i < n; ++i) {
+        std::cin >> s1[i];
+    }
+
+    s2 = new T[n];
+    for (int i = 0; i < n; ++i) {
+        std::cin >> s2[i];
+    }
+}
+
+template <typename T>
+node<T> * read_pre_in_order()
+{
+    int n = 0;
+    T *pre = NULL, *in = NULL;
+    _read_elements_seq(n, pre, in);
+    if (n == 0) {
+        return NULL;
+    }
+
+    node<T> * root = _build_pre_in_order(pre, pre + n, in, in + n);
+    delete[] pre;
+    delete[] in;
+    return root;
+}
+
+template <typename T>
+node<T> * _build_in_post_order(
+        const T * bin, const T * ein,
+        const T * bpost, const T * epost)
+{
+    if (bin == ein) {
+        return NULL;
+    }
+
+    const T * p = bin;
+    while (*p != *(epost-1)) {
+        ++p;
+    }
+
+    int left_size = p - bin;
+
+    node<T> * n = new node<T>(*p);
+    
+    n->lc = _build_in_post_order(
+            bin, p, bpost, bpost + left_size);
+    n->rc = _build_in_post_order(
+            p + 1, ein, bpost + left_size, epost - 1);
+
+    return n;
+}
+
+template <typename T>
+node<T> * read_in_post_order()
+{
+    int n = 0;
+    T *in = NULL, *post = NULL;
+    _read_elements_seq(n, in, post);
+    if (n == 0) {
+        return NULL;
+    }
+    
+    node<T> * root = _build_in_post_order(in, in + n, post, post + n);
+    delete[] in;
+    delete[] post;
+    return root;
+}
+
+template <typename T>
 node<T> * read(format_type type)
 {
     if (type == PARENT_CHILD_FORMAT) {
         return read_parent_child<T>();
     } else if (type == HIERARCHY_FORMAT) {
         return read_hierarchy<T>();
+    } else if (type == PRE_IN_ORDER_FORMAT) {
+        return read_pre_in_order<T>();
+    } else if (type == IN_POST_ORDER_FORMAT) {
+        return read_in_post_order<T>();
     } else {
         std::cerr << "unknown format: " << type << '\n';
         std::exit(1);
