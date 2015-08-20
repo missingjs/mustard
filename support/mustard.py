@@ -26,7 +26,7 @@ if cmd == 'crun':
         code = os.system('ln -s ' + module + '.sample.cpp ' + test_file)
         if code != 0:
             exit()
-    command = 'g++ -o {0}.out -I. -I{1} {0}.cpp {0}.test.cpp -static -L{1}/common -lmustard'.format(module, BASE_PATH)
+    command = 'g++ -o {0}.out -I. -I{1} {0}.cpp {0}.test.cpp -L{1}/common -lmustard'.format(module, BASE_PATH)
     code = os.system(command)
     if code != 0:
         exit()
@@ -41,6 +41,8 @@ lines.append('\n')
 exe_file = './' + module + '.out'
 inputs = []
 counter = 1
+os.environ['LD_LIBRARY_PATH'] += (':'+BASE_PATH+'/common')
+print os.environ['LD_LIBRARY_PATH']
 for i in xrange(0, len(lines)):
     if len(lines[i].strip()) == 0:
         print '\n===== [' + str(counter) + '] ====='
