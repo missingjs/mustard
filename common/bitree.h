@@ -95,10 +95,19 @@ node<T> * read_parent_child()
 }
 
 template <typename T>
+node<T> * read_hierarchy()
+{
+    std::cerr << "unsupported element type in read_hierarchy()\n";
+    return NULL;
+}
+
+template <typename T>
 node<T> * read(format_type type)
 {
     if (type == PARENT_CHILD_FORMAT) {
         return read_parent_child<T>();
+    } else if (type == HIERARCHY_FORMAT) {
+        return read_hierarchy<T>();
     } else {
         std::cerr << "unknown format: " << type << '\n';
         std::exit(1);
