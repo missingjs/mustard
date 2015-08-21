@@ -26,7 +26,7 @@ if cmd == 'crun':
         code = os.system('ln -s ' + module + '.sample.cpp ' + test_file)
         if code != 0:
             exit()
-    command = 'g++ -o {0}.out -I. -I{1} {0}.cpp {0}.test.cpp -L{1}/common -lmustard'.format(module, BASE_PATH)
+    command = 'g++ -o {0}.out -I. -I{1} -std=c++11 {0}.cpp {0}.test.cpp -L{1}/common -lmustard'.format(module, BASE_PATH)
     code = os.system(command)
     if code != 0:
         exit()

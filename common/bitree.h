@@ -292,6 +292,8 @@ void print(node<T> * root, format_type type = HIERARCHY_FORMAT)
     }
 }
 
+#include "__thrd_bitree.h"
+
 } // namespace ::mustard::bitree
 
 } // namespace ::mustard
