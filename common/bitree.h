@@ -13,6 +13,8 @@ namespace mustard {
 
 namespace bitree {
 
+// customize: operator<<, operator>>, operator!=, read_hierarchy
+
 template <typename T>
 struct node
 {
@@ -113,6 +115,43 @@ node<T> * read_hierarchy()
 {
     std::cerr << "unsupported element type in read_hierarchy()\n";
     return NULL;
+}
+
+char _next_char(const char * & p);
+
+template <typename NODE>
+NODE * _read_hierarchy_char()
+{
+    std::string input_line;
+    std::getline(std::cin, input_line);
+
+    std::stack<NODE*> stk;
+    const char * p = input_line.c_str();
+    NODE * nd = NULL;
+    while (*p) {
+        char ch = _next_char(p);
+        if (!ch) {
+            break;
+        }
+        switch (ch) {
+            case '(':
+                stk.push(nd);
+                nd = NULL;
+                break;
+            case ')':
+                stk.top()->rc = nd;
+                nd = stk.top();
+                stk.pop();
+                break;
+            case ',':
+                stk.top()->lc = nd;
+                nd = NULL;
+                break;
+            default:
+                nd = new NODE(ch);
+        }
+    }
+    return nd;
 }
 
 template <>

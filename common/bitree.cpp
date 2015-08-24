@@ -19,6 +19,7 @@ char _next_char(const char * & p)
 template <>
 node<char> * read_hierarchy<char>()
 {
+    /*
     std::string input_line;
     std::getline(std::cin, input_line);
 
@@ -48,12 +49,15 @@ node<char> * read_hierarchy<char>()
                 nd = new node<char>(ch);
         }
     }
-    return nd;
+    return nd; */
+    typedef node<char> node_t;
+    return _read_hierarchy_char<node_t>();
 }
 
 template <>
 threading_node<char> * read_hierarchy()
 {
+    /*
     std::string input_line;
     std::getline(std::cin, input_line);
 
@@ -84,7 +88,9 @@ threading_node<char> * read_hierarchy()
                         _threading<char>(ch));
         }
     }
-    return nd;
+    return nd; */
+    typedef threading_node<char> node_t;
+    return _read_hierarchy_char<node_t>();
 }
 
 } // namespace ::mustard::bitree
