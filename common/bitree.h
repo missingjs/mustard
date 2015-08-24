@@ -25,10 +25,18 @@ struct node
 
     ~node()
     {
-        delete lc;
-        delete rc;
     }
 };
+
+template <typename T>
+void free(node<T> * root)
+{
+    if (root) {
+        free(root->lc);
+        free(root->rc);
+    }
+    delete root;
+}
 
 enum format_type
 {
