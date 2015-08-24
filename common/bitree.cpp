@@ -8,6 +8,21 @@ namespace mustard {
 
 namespace bitree {
 
+std::istream & operator>>(std::istream & in, ch_data & c)
+{
+    return (in >> c.ch);
+}
+
+std::ostream & operator<<(std::ostream & out, const ch_data & c)
+{
+    return (out << c.ch);
+}
+
+bool operator!=(const ch_data & c1, const ch_data & c2)
+{
+    return c1.ch != c2.ch;
+}
+
 char _next_char(const char * & p)
 {
     while (*p && isspace(*p)) {

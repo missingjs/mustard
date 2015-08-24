@@ -30,6 +30,18 @@ struct node
     }
 };
 
+struct ch_data
+{
+    char ch;
+    ch_data(char ch = 0)
+        : ch(ch)
+    {}
+};
+
+std::istream & operator>>(std::istream & in, ch_data & c);
+std::ostream & operator<<(std::ostream & out, const ch_data & c);
+bool operator!=(const ch_data & c1, const ch_data & c2);
+
 template <typename T>
 void free(node<T> * root)
 {
@@ -110,11 +122,16 @@ node<T> * read_parent_child()
     return root;
 }
 
+template <typename NODE>
+NODE * _read_hierarchy_char();
+
 template <typename T>
 node<T> * read_hierarchy()
 {
-    std::cerr << "unsupported element type in read_hierarchy()\n";
-    return NULL;
+    // std::cerr << "unsupported element type in read_hierarchy()\n";
+    // return NULL;
+    typedef node<T> node_t;
+    return _read_hierarchy_char<node_t>();
 }
 
 char _next_char(const char * & p);
