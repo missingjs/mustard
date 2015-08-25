@@ -74,6 +74,8 @@ enum format_type
 
     IN_POST_ORDER_FORMAT,   // num-nodes, in-order and post-order sequence
 
+    CHILD_SIBLING_FORMAT    // treat as child-sibling tree
+
 };
 
 template <typename T, typename N>
@@ -279,20 +281,75 @@ N * read_in_post_order()
     return root;
 }
 
+template <typename N>
+void _append_child(N * parent, N * child)
+{
+    if (!parent->lc) {
+        parent->lc = child;
+    } else {
+        N * n = parent->lc;
+        while (n->rc) {
+            n = n->rc;
+        }
+        n->rc = child;
+    }
+}
+
+template <typename N>
+N * _read_child_sibling_char()
+{
+    std::string input_line;
+    std::getline(std::cin, input_line);
+
+    std::stack<N*> stk;
+    const char * p = input_line.c_str();
+    N * n = NULL;
+
+    while (*p) {
+        char ch = _next_char(p);
+        if (!ch) {
+            break;
+        }
+        switch (ch) {
+            case '(':
+                break;
+            case ')':
+            case ',':
+                n = stk.top();
+                stk.pop();
+                _append_child(stk.top(), n);
+                break;
+            default:
+                stk.push(new N(ch));
+                break;
+        }
+    }
+    return stk.top();
+}
+
+template <typename T, typename N>
+N * read_child_sibling()
+{
+    return _read_child_sibling_char<N>();
+}
+
 template <typename T, typename N = node<T> >
 N * read(format_type type = HIERARCHY_FORMAT)
 {
-    if (type == PARENT_CHILD_FORMAT) {
-        return read_parent_child<T,N>();
-    } else if (type == HIERARCHY_FORMAT) {
-        return read_hierarchy<T,N>();
-    } else if (type == PRE_IN_ORDER_FORMAT) {
-        return read_pre_in_order<T,N>();
-    } else if (type == IN_POST_ORDER_FORMAT) {
-        return read_in_post_order<T,N>();
-    } else {
-        std::cerr << "unknown format: " << type << '\n';
-        std::exit(1);
+    switch (type) {
+        case PARENT_CHILD_FORMAT:
+            return read_parent_child<T,N>();
+        case HIERARCHY_FORMAT:
+            return read_hierarchy<T,N>();
+        case PRE_IN_ORDER_FORMAT:
+            return read_pre_in_order<T,N>();
+        case IN_POST_ORDER_FORMAT:
+            return read_in_post_order<T,N>();
+        case CHILD_SIBLING_FORMAT:
+            return read_child_sibling<T,N>();
+        default:
+            std::cerr << "unknown format: " << type << '\n';
+            std::exit(1);
     }
 }
 
@@ -340,6 +397,24 @@ void print_hierarchy(node<T> * root)
 }
 
 template <typename T>
+void print_child_sibling(node<T> * root)
+{
+    std::cout << root->data;
+    if (root->lc) {
+        node<T> * n = root->lc;
+        std::cout << '(';
+        print_child_sibling(n);
+        n = n->rc;
+        while (n) {
+            std::cout << ',';
+            print_child_sibling(n);
+            n = n->rc;
+        }
+        std::cout << ')';
+    }
+}
+
+template <typename T>
 void print(node<T> * root, format_type type = HIERARCHY_FORMAT)
 {
     if (!root) {
@@ -347,13 +422,20 @@ void print(node<T> * root, format_type type = HIERARCHY_FORMAT)
         return;
     }
 
-    if (type == PARENT_CHILD_FORMAT) {
-        print_parent_child(root);
-    } else if (type == HIERARCHY_FORMAT) {
-        print_hierarchy(root);
-    } else {
-        std::cerr << "unknown format: " << type << '\n';
-        std::exit(1);
+    switch (type) {
+        case PARENT_CHILD_FORMAT:
+            print_parent_child(root);
+            break;
+        case HIERARCHY_FORMAT:
+            print_hierarchy(root);
+            break;
+        case CHILD_SIBLING_FORMAT:
+            print_child_sibling(root);
+            std::cout << '\n';
+            break;
+        default:
+            std::cerr << "unknown format: " << type << '\n';
+            std::exit(1);
     }
 }
 
