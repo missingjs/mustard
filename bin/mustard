@@ -26,7 +26,12 @@ def case_compile(module):
         exit()
 
 
-def case_run(module):
+def case_run(module, n_input):
+    if n_input:
+        n_input = int(n_input)
+        if n_input <= 0:
+            print 'Invalid --input: ' + str(n_input)
+            exit()
     input_file_path = module + '.input'
     lines = []
     with open(input_file_path) as fin:
@@ -35,15 +40,18 @@ def case_run(module):
 
     exe_file = './' + module + '.out'
     inputs = []
-    counter = 1
+    counter = 0
     lib_key = 'LD_LIBRARY_PATH'
     if lib_key not in os.environ:
         os.environ[lib_key] = '';
     os.environ['LD_LIBRARY_PATH'] += (':'+BASE_PATH+'/common')
     for i in xrange(0, len(lines)):
         if len(lines[i].strip()) == 0:
-            print '\n===== [' + str(counter) + '] ====='
             counter += 1
+            if n_input and n_input > 0 and counter != int(n_input):
+                inputs = []
+                continue
+            print '\n===== [' + str(counter) + '] ====='
             if len(inputs) == 0:
                 continue
             p = subprocess.Popen(exe_file, stdin=subprocess.PIPE)
@@ -64,7 +72,7 @@ def case_run(module):
 def mustard_main():
     '''mustard main entry
 Usage:
-    mustard [-r] [-c] <case>
+    mustard [-r] [-c] [--input=<N>] <case>
     mustard -h | --help
     mustard --version
 Options:
@@ -72,6 +80,7 @@ Options:
     --version    Show version.
     -r           Run case specified by <case>.
     -c           Compile case files.
+    --input=<N>  Use (N)th input, first is 1.
 '''
 
     arguments = docopt.docopt(mustard_main.__doc__, version="v1.0")
@@ -79,16 +88,17 @@ Options:
     do_run = arguments['-r']
     do_compile = arguments['-c']
     module = arguments['<case>']
+    n_input = arguments['--input']
 
     if do_compile:
         case_compile(module)
 
     if do_run:
-        case_run(module)
+        case_run(module, n_input)
 
     if not do_compile and not do_run:
         case_compile(module)
-        case_run(module)
+        case_run(module, n_input)
 
 
 if __name__ == '__main__':
