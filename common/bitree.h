@@ -141,7 +141,9 @@ NODE * _read_hierarchy_char()
 
     std::stack<NODE*> stk;
     const char * p = input_line.c_str();
-    NODE * nd = NULL;
+    NODE *lc = NULL, *rc = NULL, *nd = NULL;
+
+    stk.push(NULL);
     while (*p) {
         char ch = _next_char(p);
         if (!ch) {
@@ -149,23 +151,25 @@ NODE * _read_hierarchy_char()
         }
         switch (ch) {
             case '(':
-                stk.push(nd);
-                nd = NULL;
-                break;
-            case ')':
-                stk.top()->rc = nd;
-                nd = stk.top();
-                stk.pop();
+                stk.push(NULL);
                 break;
             case ',':
-                stk.top()->lc = nd;
-                nd = NULL;
+                lc = stk.top();
+                stk.pop();
+                stk.top()->lc = lc;
+                stk.push(NULL);
+                break;
+            case ')':
+                rc = stk.top();
+                stk.pop();
+                stk.top()->rc = rc;
                 break;
             default:
-                nd = new NODE(ch);
+                stk.top() = new NODE(ch);
+                break;
         }
     }
-    return nd;
+    return stk.top();
 }
 
 template <>
