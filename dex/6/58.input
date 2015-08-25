@@ -1,0 +1,7 @@
+a(b(d,e),c(f,g))
+d
+x(A(B,C),)
+
+a(b(d,e),c(f,g))
+c
+x(A(B,C),)
