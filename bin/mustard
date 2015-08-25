@@ -55,8 +55,10 @@ def case_run(module):
             if exit_code != 0:
                 print '[warn] exit code: %d' % (exit_code,)
             inputs = []
+        elif lines[i].strip()[0] == '#':
+            continue
         else:
-             inputs.append(lines[i])
+            inputs.append(lines[i])
 
 
 def mustard_main():
