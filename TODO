@@ -1,0 +1,3 @@
+'#' as comment flag in '*.input' file
+template for test case generation, by 'mustard.py'
+separate compile and run by parameter, while using 'mustard.py'
