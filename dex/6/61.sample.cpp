@@ -16,7 +16,8 @@ void _g(node_t * root, int seq, int & degree)
 int _gd1(node_t * root)
 {
     int deg = 0;
-    _g(root, 1, deg);
+    _g(root, 0, deg);
+    return deg;
 }
 
 int _gd2(node_t * root)

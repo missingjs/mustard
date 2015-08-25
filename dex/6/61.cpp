@@ -3,7 +3,8 @@
 
 int main()
 {
-    node_t * root = bitree::read<char>();
+    node_t * root = bitree::read<char>(bitree::CHILD_SIBLING_FORMAT);
+    bitree::print(root, bitree::CHILD_SIBLING_FORMAT);
     int d = get_degree(root);
     std::cout << d << '\n';
     bitree::free(root);
