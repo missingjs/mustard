@@ -25,7 +25,7 @@ struct node
         : data(t), lc(lc), rc(rc)
     {}
 
-    ~node()
+    virtual ~node()
     {
     }
 };
@@ -76,15 +76,15 @@ enum format_type
 
 };
 
-template <typename T>
-node<T> * read_parent_child()
+template <typename T, typename N>
+N * read_parent_child()
 {
     const char term_char = '#';
 
-    std::queue<node<T>*> qu;
+    std::queue<N*> qu;
     T parent, child;
     std::cin >> parent;
-    node<T> * root = new node<T>(parent);
+    N * root = new N(parent);
     qu.push(root);
 
     char side;
@@ -97,13 +97,13 @@ node<T> * read_parent_child()
     }
 
     while (!qu.empty()) {
-        node<T> * front = qu.front();
+        N * front = qu.front();
         if (front->data != parent) {
             qu.pop();
             continue;
         }
 
-        node<T> * n = new node<T>(child);
+        N * n = new N(child);
         if (side == 'L' || side == 'l') {
             front->lc = n;
         } else if (side == 'R' || side == 'r') {
@@ -125,13 +125,10 @@ node<T> * read_parent_child()
 template <typename NODE>
 NODE * _read_hierarchy_char();
 
-template <typename T>
-node<T> * read_hierarchy()
+template <typename T, typename N>
+N * read_hierarchy()
 {
-    // std::cerr << "unsupported element type in read_hierarchy()\n";
-    // return NULL;
-    typedef node<T> node_t;
-    return _read_hierarchy_char<node_t>();
+    return _read_hierarchy_char<N>();
 }
 
 char _next_char(const char * & p);
@@ -172,10 +169,10 @@ NODE * _read_hierarchy_char()
 }
 
 template <>
-node<char> * read_hierarchy();
+node<char> * read_hierarchy< char,node<char> >();
 
-template <typename T>
-node<T> * _build_pre_in_order(
+template <typename T, typename N>
+N * _build_pre_in_order(
         const T * bpre, const T * epre, 
         const T * bin, const T * ein)
 {
@@ -190,11 +187,11 @@ node<T> * _build_pre_in_order(
 
     int left_size = p - bin;
 
-    node<T> * n = new node<T>(*bpre);
+    N * n = new N(*bpre);
 
-    n->lc = _build_pre_in_order(
+    n->lc = _build_pre_in_order<T,N>(
             bpre + 1, bpre + 1 + left_size, bin, p);
-    n->rc = _build_pre_in_order(
+    n->rc = _build_pre_in_order<T,N>(
             bpre + 1 + left_size, epre, p + 1, ein);
 
     return n;
@@ -220,8 +217,8 @@ void _read_elements_seq(int & n, T * & s1, T * & s2)
     }
 }
 
-template <typename T>
-node<T> * read_pre_in_order()
+template <typename T, typename N>
+N * read_pre_in_order()
 {
     int n = 0;
     T *pre = NULL, *in = NULL;
@@ -230,14 +227,14 @@ node<T> * read_pre_in_order()
         return NULL;
     }
 
-    node<T> * root = _build_pre_in_order(pre, pre + n, in, in + n);
+    N * root = _build_pre_in_order<T,N>(pre, pre + n, in, in + n);
     delete[] pre;
     delete[] in;
     return root;
 }
 
-template <typename T>
-node<T> * _build_in_post_order(
+template <typename T, typename N>
+N * _build_in_post_order(
         const T * bin, const T * ein,
         const T * bpost, const T * epost)
 {
@@ -252,18 +249,18 @@ node<T> * _build_in_post_order(
 
     int left_size = p - bin;
 
-    node<T> * n = new node<T>(*p);
+    N * n = new N(*p);
     
-    n->lc = _build_in_post_order(
+    n->lc = _build_in_post_order<T,N>(
             bin, p, bpost, bpost + left_size);
-    n->rc = _build_in_post_order(
+    n->rc = _build_in_post_order<T,N>(
             p + 1, ein, bpost + left_size, epost - 1);
 
     return n;
 }
 
-template <typename T>
-node<T> * read_in_post_order()
+template <typename T, typename N>
+N * read_in_post_order()
 {
     int n = 0;
     T *in = NULL, *post = NULL;
@@ -272,23 +269,23 @@ node<T> * read_in_post_order()
         return NULL;
     }
     
-    node<T> * root = _build_in_post_order(in, in + n, post, post + n);
+    N * root = _build_in_post_order<T,N>(in, in + n, post, post + n);
     delete[] in;
     delete[] post;
     return root;
 }
 
-template <typename T>
-node<T> * read(format_type type = HIERARCHY_FORMAT)
+template <typename T, typename N = node<T> >
+N * read(format_type type = HIERARCHY_FORMAT)
 {
     if (type == PARENT_CHILD_FORMAT) {
-        return read_parent_child<T>();
+        return read_parent_child<T,N>();
     } else if (type == HIERARCHY_FORMAT) {
-        return read_hierarchy<T>();
+        return read_hierarchy<T,N>();
     } else if (type == PRE_IN_ORDER_FORMAT) {
-        return read_pre_in_order<T>();
+        return read_pre_in_order<T,N>();
     } else if (type == IN_POST_ORDER_FORMAT) {
-        return read_in_post_order<T>();
+        return read_in_post_order<T,N>();
     } else {
         std::cerr << "unknown format: " << type << '\n';
         std::exit(1);

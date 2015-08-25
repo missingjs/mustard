@@ -36,7 +36,7 @@ template <typename T>
 using threading_node = node< _threading<T> >;
 
 template <>
-threading_node<char> * read_hierarchy();
+threading_node<char> * read_hierarchy< char, threading_node<char> >();
 
 enum threading_type
 {
