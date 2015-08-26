@@ -42,3 +42,9 @@ int mapper<T>::_find(const T & t) const
     return i < (int) _arr.size() ? i : -1;
 }
 
+template <typename T>
+std::vector<T> mapper<T>::all() const
+{
+    return _arr;
+}
+
