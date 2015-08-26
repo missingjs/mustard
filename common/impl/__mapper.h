@@ -48,3 +48,9 @@ std::vector<T> mapper<T>::all() const
     return _arr;
 }
 
+template <typename T>
+T mapper<T>::element(int i) const
+{
+    return _arr[i];
+}
+

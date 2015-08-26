@@ -28,6 +28,7 @@ public:
     int get(const T & t) const;
     int size() const;
     std::vector<T> all() const;
+    T element(int i) const;
 
 private:
     int _find(const T & t) const;
@@ -47,9 +48,10 @@ public:
     int get(int e) const;
     int size() const;
     std::vector<int> all() const;
+    int element(int i) const;
 private:
     int * _arr;
-    int _size;
+    std::vector<int> _elements;
 };
 
 template <>

@@ -4,7 +4,7 @@ namespace mustard {
 namespace graph {
 
 mapper<int>::mapper()
-    : _arr(new int[arr_size]), _size(0)
+    : _arr(new int[arr_size]), _elements()
 {
     for (int i = 0; i < arr_size; ++i) {
         _arr[i] = -1;
@@ -19,7 +19,8 @@ mapper<int>::~mapper()
 int mapper<int>::add(int e)
 {
     if (_arr[e] == -1) {
-        _arr[e] = _size++;
+        _arr[e] = (int)_elements.size();
+        _elements.push_back(e);
     }
     return _arr[e];
 }
@@ -31,7 +32,7 @@ int mapper<int>::get(int e) const
 
 int mapper<int>::size() const
 {
-    return _size;
+    return (int) _elements.size();
 }
 
 struct _mapper_cmp
@@ -58,6 +59,11 @@ std::vector<int> mapper<int>::all() const
     }
     std::sort(v.begin(), v.end(), _mapper_cmp(_arr));
     return v;
+}
+
+int mapper<int>::element(int i) const
+{
+    return _elements[i];
 }
 
 std::vector<char> mapper<char>::all() const
