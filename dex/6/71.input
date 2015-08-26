@@ -1,0 +1,5 @@
+A(B(E,F),C(G),D)
+
+A(B,C(E(F,G,H)),D(I,J))
+
+A
