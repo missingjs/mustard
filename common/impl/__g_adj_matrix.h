@@ -1,12 +1,23 @@
 template <typename T>
     template <typename Iter>
-graph_adj_matrix<T>::graph_adj_matrix(Iter begin, Iter end)
-    : _mx(end-begin, end-begin)
+_graph_base<T>::_graph_base(Iter begin, Iter end)
+    : _mp()
 {
     for (Iter i(begin); i != end; ++i) {
         _mp.add(*i);
     }
 }
+
+template <typename T>
+_graph_base<T>::_graph_base()
+{
+}
+
+template <typename T>
+    template <typename Iter>
+graph_adj_matrix<T>::graph_adj_matrix(Iter begin, Iter end)
+    : _graph_base<T>(begin, end), _mx(end-begin, end-begin)
+{}
 
 template <typename T>
 graph_adj_matrix<T>::~graph_adj_matrix()
@@ -21,7 +32,7 @@ void graph_adj_matrix<T>::add(const T & t1, const T & t2)
 }
 
 template <typename T>
-int graph_adj_matrix<T>::get(const T & t) const
+int _graph_base<T>::get(const T & t) const
 {
     return _mp.get(t);
 }

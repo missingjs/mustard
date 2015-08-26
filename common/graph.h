@@ -59,9 +59,22 @@ public:
     std::vector<char> all() const;
 };
 
+template <typename T>
+class _graph_base
+{
+public:
+    template <typename Iter>
+    _graph_base(Iter begin, Iter end);
+    ~_graph_base();
+
+    int get(const T & t) const;
+
+protected:
+    mapper<T> _mp;
+};
 
 template <typename T>
-class graph_adj_matrix
+class graph_adj_matrix : public _graph_base<T>
 {
 public:
     template <typename Iter>
@@ -70,7 +83,6 @@ public:
 
     void add(const T & t1, const T & t2);
 
-    int get(const T & t) const;
     int get(const T & t1, const T & t2) const;
 
     void display(std::ostream & out) const;
@@ -83,7 +95,6 @@ public:
     static graph_adj_matrix<T> * read();
 
 private:
-    mapper<T> _mp;
     matrix::common_matrix<int> _mx;
 };
 
@@ -104,6 +115,27 @@ public:
 
 };
 
+template <typename T>
+class graph_adj_list : public _graph_base<T>
+{
+public:
+    template <typename Iter>
+    graph_adj_list(Iter begin, Iter end);
+    ~graph_adj_list();
+
+    void add(const T & t1, const T & t2);
+
+    int get(const T & t1, const T & t2) const;
+
+    void display(std::ostream & out) const;
+
+    void print() const
+    {
+        display(std::cout);
+    }
+
+    static graph_adj_list<T> * read();
+};
 
 
 #include "impl/__mapper.h"
