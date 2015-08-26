@@ -1,0 +1,7 @@
+A
+
+A(B(E,F),C(G),D)
+
+A(B,C)
+
+R(A(D,E),B,C(F(G,H,K)))
