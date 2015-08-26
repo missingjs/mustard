@@ -1,3 +1,4 @@
+
 enum link_type
 {
     NODE_LINK,
@@ -276,3 +277,4 @@ void free_threading(threading_node<T> * root)
     _de_threading(root);
     delete root;
 }
+

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-MODULES="xstring bitree"
+MODULES="xstring bitree graph"
 
 SOURCES=""
 OBJECTS=""

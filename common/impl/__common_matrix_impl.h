@@ -1,10 +1,3 @@
-#include <algorithm>
-#include <iostream>
-
-namespace mustard {
-
-namespace matrix {
-
 template <typename T>
 common_matrix<T>::common_matrix(int row, int col)
     : _row(row), _col(col), _data(new T[row * col])
@@ -150,8 +143,4 @@ void print(const common_matrix<T> & m)
 {
     std::cout << m;
 }
-
-} // namespace ::mustard::matrix
-
-} // namespace ::mustard
 

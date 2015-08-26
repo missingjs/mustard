@@ -1,9 +1,3 @@
-#include <algorithm>
-
-namespace mustard {
-
-namespace matrix {
-
 template <typename T>
 const T sparse_matrix<T>::_default_value = T();
 
@@ -222,6 +216,3 @@ sparse_matrix<T>::operator [](int row) const
     return _const_matrix_row(row, *this);
 }
 
-} // namespace ::mustard::matrix
-
-} // namespace ::mustard

@@ -439,10 +439,11 @@ void print(node<T> * root, format_type type = HIERARCHY_FORMAT)
     }
 }
 
-#include "__thrd_bitree.h"
+#include "impl/__thrd_bitree.h"
 
 } // namespace ::mustard::bitree
 
 } // namespace ::mustard
 
 #endif  // ifndef MUSTARD_BITREE_H
+

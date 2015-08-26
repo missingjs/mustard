@@ -3,6 +3,8 @@
 
 #include <iosfwd>
 #include <vector>
+#include <algorithm>
+#include <iostream>
 
 namespace mustard {
 
@@ -222,11 +224,12 @@ void print_as_common(const sparse_matrix<T> & m);
 template <typename T>
 void print_as_common(const sparse_matrix<T> * m);
 
+#include "impl/__common_matrix_impl.h"
+#include "impl/__sparse_matrix_impl.h"
+
 } // namespace ::mustard::matrix
 
 } // namespace ::mustard
 
-#include "__common_matrix_impl.h"
-#include "__sparse_matrix_impl.h"
-
 #endif  // ifndef MUSTARD_MATRIX2_H
+
