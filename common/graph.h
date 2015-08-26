@@ -4,6 +4,7 @@
 #include <vector>
 #include <iostream>
 #include <algorithm>
+#include <cstring>
 
 #include "matrix2.h"
 #include "array.h"
@@ -69,7 +70,12 @@ public:
     _graph_base(Iter begin, Iter end);
     ~_graph_base();
 
-    int get(const T & t) const;
+    int index(const T & t) const;
+
+    int vex_count() const
+    {
+        return _mp.size();
+    }
 
 protected:
     mapper<T> _mp;
@@ -117,7 +123,17 @@ public:
 
 };
 
-template <typename T>
+struct adj_list_node
+{
+    int index;
+    adj_list_node<T> * next;
+
+    adj_list_node(int i)
+        : index(i), next(NULL)
+    {}
+};
+
+template <typename T, typename N = adj_list_node>
 class graph_adj_list : public _graph_base<T>
 {
 public:
@@ -136,12 +152,40 @@ public:
         display(std::cout);
     }
 
-    static graph_adj_list<T> * read();
+    static graph_adj_list<T,N> * read();
+
+private:
+    N ** _heads;
+};
+
+template <typename T, typename N = adj_list_node>
+class ugraph_adj_list : public graph_adj_list<T,N>
+{
+public:
+    template <typename Iter>
+    ugraph_adj_list(Iter begin, Iter end)
+        : graph_adj_list<T,N>(begin, end)
+    {}
+
+    void add(const T & t1, const T & t2);
+
+    int get(const T & t1, const T & t2) const;
+
+    static ugraph_adj_list<T,N> * read();
+
 };
 
 
+template <typename T, typename G>
+G * _read_graph();
+
+
 #include "impl/__mapper.h"
+#include "impl/__graph.h"
 #include "impl/__g_adj_matrix.h"
+#include "impl/__g_adj_list.h"
+#include "impl/__n_adj_matrix.h"
+#include "impl/__n_adj_list.h"
 
 }  // namespace ::mustard::graph
 }  // namespace ::mustard

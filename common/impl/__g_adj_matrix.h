@@ -32,7 +32,7 @@ void graph_adj_matrix<T>::add(const T & t1, const T & t2)
 }
 
 template <typename T>
-int _graph_base<T>::get(const T & t) const
+int _graph_base<T>::index(const T & t) const
 {
     return _mp.get(t);
 }
@@ -71,37 +71,14 @@ void graph_adj_matrix<T>::display(std::ostream & out) const
     matrix::print(_mx);
 }
 
-template <typename T, typename G>
-G * _read_adj_matrix_graph()
-{
-    int len = 0;                                                           
-    T * arr = array::read<T>(len);                                            
-    if (!arr || len == 0) {                                                
-        return NULL;                                                       
-    }                                                                      
-                                                                           
-    G * g = new G(arr, arr + len);     
-                                                                           
-    int num_e = 0;                                                         
-    std::cin >> num_e;                                                     
-                                                                           
-    T t1, t2;                                                              
-    for (int i = 0; i < num_e; ++i) {                                      
-        std::cin >> t1 >> t2;                                              
-        g->add(t1, t2);                                                    
-    }                                                                      
-                                                                           
-    return g;
-}
-
 template <typename T>
 graph_adj_matrix<T> * graph_adj_matrix<T>::read()
 {
-    return _read_adj_matrix_graph<T, graph_adj_matrix<T> >();
+    return _read_graph<T, graph_adj_matrix<T> >();
 }
 
 template <typename T>
 ugraph_adj_matrix<T> * ugraph_adj_matrix<T>::read()
 {
-    return _read_adj_matrix_graph<T, ugraph_adj_matrix<T> >();
+    return _read_graph<T, ugraph_adj_matrix<T> >();
 }
