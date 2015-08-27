@@ -32,7 +32,7 @@ public:
         return &_mx;
     }
 
-private:
+protected:
 
     struct_t   _mx;
 
@@ -81,6 +81,47 @@ private:
     W  _unconnect;
 
 };
+
+
+template <>
+class directed_graph_adaptor< matrix::common_matrix<bool> > :
+    public directed_network_adaptor<bool, matrix::common_matrix<bool> >
+{
+    typedef directed_network_adaptor< bool, matrix::common_matrix<bool> > base_t;
+
+public:
+
+    directed_graph_adaptor(int n, bool iv)
+        : base_t(n, iv)
+    {}
+
+    void set(int i, int j)
+    {
+        base_t::set(i, j, true);
+    }
+
+};
+
+
+template <>
+class undirected_graph_adaptor< matrix::symmetric_matrix<bool> > :
+    public undirected_network_adaptor<bool, matrix::symmetric_matrix<bool> >
+{
+    typedef undirected_network_adaptor<bool, matrix::symmetric_matrix<bool> >  base_t;
+
+public:
+
+    undirected_graph_adaptor(int n, bool iv)
+        : base_t(n, iv)
+    {}
+
+    void set(int i, int j)
+    {
+        base_t::set(i, j, true);
+    }
+
+};
+
 
 template <typename W>
 directed_network_adaptor<W, matrix::common_matrix<W> >::

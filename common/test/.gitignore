@@ -1,0 +1,3 @@
+*.input
+!common_net.input
+!common_graph.input

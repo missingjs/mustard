@@ -48,7 +48,7 @@ public:
 
     void display(std::ostream & out) const;
 
-private:
+protected:
 
     Identifier _idtf;
 
@@ -70,20 +70,6 @@ struct numeric_weight
 template <typename W, typename S>
 class directed_network_adaptor
 {};
-/*
-{
-    struct_adaptor(int n, const W & w); 
-
-    void set(int i, int j, const W & w); 
-
-    W get(int i, int j) const;
-
-    void remove(int i, int j);
-
-    S * get_structure() const;
-
-    void display(std::ostream & out) const;
-}; */
 
 
 template <typename V, typename W, typename S>
@@ -118,6 +104,70 @@ public:
     {}
 };
 
+template <typename T>
+struct boolean_weight
+{
+    static T initial_value()
+    {
+        return T(0);
+    }
+};
+
+template <typename S>
+class directed_graph_adaptor
+{};
+
+template <typename V, typename S>
+class directed_graph :
+    public generic_graph< V, bool,
+       directed_graph_adaptor<S>, boolean_weight<bool> >
+{
+    typedef generic_graph< V, bool, directed_graph_adaptor<S>, boolean_weight<bool> >  base_t;
+
+    using base_t::_adpt;
+    using base_t::_idtf;
+
+public:
+    template <typename Iter>
+    directed_graph(int n, Iter begin, Iter end)
+        : base_t(n, begin, end)
+    {}
+
+    void set(const V & v1, const V & v2)
+    {
+        _adpt->set(_idtf.id(v1), _idtf.id(v2));
+    }
+
+};
+
+
+template <typename S>
+class undirected_graph_adaptor
+{};
+
+template <typename V, typename S>
+class undirected_graph:
+    public generic_graph< V, bool,
+        undirected_graph_adaptor<S>, boolean_weight<bool> >
+{
+    typedef generic_graph< V, bool, undirected_graph_adaptor<S>, boolean_weight<bool> >  base_t;
+
+    using base_t::_adpt;
+    using base_t::_idtf;
+
+public:
+    template <typename Iter>
+    undirected_graph(int n, Iter begin, Iter end)
+        : base_t(n, begin, end)
+    {}
+
+    void set(const V & v1, const V & v2)
+    {
+        _adpt->set(_idtf.id(v1), _idtf.id(v2));
+    }
+
+};
+
 
 template <typename Network>
 Network * read_network()
@@ -140,6 +190,28 @@ Network * read_network()
 
     delete[] vexes;
     return net;
+}
+
+
+template <typename Graph>
+Graph * read_graph()
+{
+    typedef typename Graph::vex_t vex_t;
+    int n = 0;
+    vex_t * vexes = array::read<vex_t>(n);
+
+    Graph * g = new Graph(n, vexes, vexes + n);
+
+    int m = 0;
+    std::cin >> m;
+    vex_t v1, v2;
+    for (int i = 0; i < m; ++i) {
+        std::cin >> v1 >> v2;
+        g->set(v1, v2);
+    }
+
+    delete[] vexes;
+    return g;
 }
 
 
