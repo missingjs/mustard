@@ -92,6 +92,25 @@ public:
 };
 
 
+template <typename W, typename S>
+class undirected_network_adaptor
+{};
+
+
+template <typename V, typename W, typename S>
+class undirected_network :
+    public generic_graph< V, W,
+        undirected_network_adaptor<W,S>, numeric_weight<W> >
+{
+public:
+    template <typename Iter>
+    undirected_network(int n, Iter begin, Iter end)
+        : generic_graph< V, W, undirected_network_adaptor<W,S>,
+            numeric_weight<W> >(n, begin, end)
+    {}
+};
+
+
 template <typename Network>
 Network * read_network()
 {

@@ -278,7 +278,7 @@ public:
 
         const symmetric_matrix<T> & _mx;
 
-        _const_matrix_row(int row, const _const_matrix_row & mx)
+        _const_matrix_row(int row, const symmetric_matrix<T> & mx)
             : _row(row), _mx(mx)
         {}
 
