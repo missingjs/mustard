@@ -122,7 +122,8 @@ class directed_graph :
     public generic_graph< V, bool,
        directed_graph_adaptor<S>, boolean_weight<bool> >
 {
-    typedef generic_graph< V, bool, directed_graph_adaptor<S>, boolean_weight<bool> >  base_t;
+    typedef generic_graph< V, bool, 
+        directed_graph_adaptor<S>, boolean_weight<bool> >  base_t;
 
     using base_t::_adpt;
     using base_t::_idtf;
@@ -150,7 +151,8 @@ class undirected_graph:
     public generic_graph< V, bool,
         undirected_graph_adaptor<S>, boolean_weight<bool> >
 {
-    typedef generic_graph< V, bool, undirected_graph_adaptor<S>, boolean_weight<bool> >  base_t;
+    typedef generic_graph< V, bool, 
+        undirected_graph_adaptor<S>, boolean_weight<bool> >  base_t;
 
     using base_t::_adpt;
     using base_t::_idtf;
