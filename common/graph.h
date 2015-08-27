@@ -1,193 +1,163 @@
 #ifndef MUSTARD_GRAPH_H
 #define MUSTARD_GRAPH_H 1
 
-#include <vector>
+#include <limits>
 #include <iostream>
-#include <algorithm>
-#include <cstring>
 
 #include "matrix2.h"
+#include "id.h"
 #include "array.h"
 
 namespace mustard {
 namespace graph {
 
-enum graph_type {
-    DG,   // directed graph
-    DN,   // directed net
-    UDG,  // undirected graph
-    UDN   // undirected net
-};
+#include "impl/__graph_network.h"
 
-template <typename T>
-class mapper
+template <
+    typename V, 
+    typename W,
+    typename Structure,
+    typename WeightTraits, 
+    typename Identifier = id::identifier<V>
+>
+class generic_graph
 {
 public:
-    mapper();
-    ~mapper();
-    int add(const T & t);
-    int get(const T & t) const;
-    int size() const;
-    std::vector<T> all() const;
-    T element(int i) const;
 
-private:
-    int _find(const T & t) const;
+    typedef V vex_t;
 
-private:
-    std::vector<T> _arr;
-};
+    typedef W weight_t;
 
-template <>
-class mapper<int>
-{
-    const int arr_size = 256;
-public:
-    mapper();
-    ~mapper();
-    int add(int e); 
-    int get(int e) const;
-    int size() const;
-    std::vector<int> all() const;
-    int element(int i) const;
-private:
-    int * _arr;
-    std::vector<int> _elements;
-};
 
-template <>
-class mapper<char> : public mapper<int>
-{
-public:
-    std::vector<char> all() const;
-};
-
-template <typename T>
-class _graph_base
-{
 public:
     template <typename Iter>
-    _graph_base(Iter begin, Iter end);
-    ~_graph_base();
+    generic_graph(int n, Iter begin, Iter end);
 
-    int index(const T & t) const;
+    ~generic_graph();
 
-    int vex_count() const
-    {
-        return _mp.size();
-    }
+    int id(const V & v) const;
 
-protected:
-    mapper<T> _mp;
-};
+    V vex(int id) const;
 
-template <typename T>
-class graph_adj_matrix : public _graph_base<T>
-{
-public:
-    template <typename Iter>
-    graph_adj_matrix(Iter begin, Iter end);
-    ~graph_adj_matrix();
+    void set(const V & v1, const V & v2, const W & w);
 
-    void add(const T & t1, const T & t2);
+    W get(const V & v1, const V & v2) const;
 
-    int get(const T & t1, const T & t2) const;
+    void remove(const V & v1, const V & v2);
+
+    Structure * get_structure() const;
 
     void display(std::ostream & out) const;
 
-    void print() const
-    {
-        display(std::cout);
+private:
+
+    Identifier _idtf;
+
+    Structure * _struct;
+
+};
+
+
+template <typename V, typename W, typename S>
+class directed_network : public generic_graph< V, W, S, numeric_weight<W> >
+{
+public:
+    template <typename Iter>
+    directed_network(int n, Iter begin, Iter end)
+        : generic_graph< V,W,S,numeric_weight<W> >(n, begin, end)
+    {}
+};
+
+
+template <typename Network>
+Network * read_network()
+{
+    typedef typename Network::vex_t vex_t;
+    typedef typename Network::weight_t w_t;
+    int n = 0;
+    vex_t * vexes = array::read<vex_t>(n);
+    
+    Network * net = new Network(n, vexes, vexes + n);
+
+    int m = 0;
+    std::cin >> m;
+    vex_t v1, v2;
+    w_t w;
+    for (int i = 0; i < m; ++i) {
+        std::cin >> v1 >> v2 >> w;
+        net->set(v1, v2, w);
     }
 
-    static graph_adj_matrix<T> * read();
+    delete[] vexes;
+    return net;
+}
 
-private:
-    matrix::common_matrix<int> _mx;
-};
 
-template <typename T>
-class ugraph_adj_matrix : public graph_adj_matrix<T>
-{
-public:
+#include "impl/__adj_matrix.h"
+
+
+template <typename V, typename W, typename S, typename WT, typename I>
     template <typename Iter>
-    ugraph_adj_matrix(Iter begin, Iter end)
-        : graph_adj_matrix<T>(begin, end)
-    {}
-
-    void add(const T & t1, const T & t2);
-
-    int get(const T & t1, const T & t2) const;
-
-    static ugraph_adj_matrix<T> * read();
-
-};
-
-struct adj_list_node
+generic_graph<V,W,S,WT,I>::generic_graph(int n, Iter begin, Iter end)
+    : _idtf(begin, end), _struct(new S(n, WT::initial_value()))
 {
-    int index;
-    adj_list_node<T> * next;
+}
 
-    adj_list_node(int i)
-        : index(i), next(NULL)
-    {}
-};
-
-template <typename T, typename N = adj_list_node>
-class graph_adj_list : public _graph_base<T>
+template <typename V, typename W, typename S, typename WT, typename I>
+generic_graph<V,W,S,WT,I>::~generic_graph()
 {
-public:
-    template <typename Iter>
-    graph_adj_list(Iter begin, Iter end);
-    ~graph_adj_list();
+    delete _struct;
+}
 
-    void add(const T & t1, const T & t2);
+template <typename V, typename W, typename S, typename WT, typename I>
+int generic_graph<V,W,S,WT,I>::id(const V & v) const
+{
+    return _idtf.id(v);
+}
 
-    int get(const T & t1, const T & t2) const;
+template <typename V, typename W, typename S, typename WT, typename I>
+V generic_graph<V,W,S,WT,I>::vex(int id) const
+{
+    return _idtf.element(id);
+}
 
-    void display(std::ostream & out) const;
+template <typename V, typename W, typename S, typename WT, typename I>
+void generic_graph<V,W,S,WT,I>::set(const V & v1, const V & v2, const W & w)
+{
+    _struct->set(_idtf.id(v1), _idtf.id(v2), w);
+}
 
-    void print() const
-    {
-        display(std::cout);
+template <typename V, typename W, typename S, typename WT, typename I>
+W generic_graph<V,W,S,WT,I>::get(const V & v1, const V & v2) const
+{
+    return _struct->get(_idtf.id(v1), _idtf.id(v2));
+}
+
+template <typename V, typename W, typename S, typename WT, typename I>
+void generic_graph<V,W,S,WT,I>::remove(const V & v1, const V & v2)
+{
+    _struct->remove(_idtf.id(v1), _idtf.id(v2));
+}
+
+template <typename V, typename W, typename S, typename WT, typename I>
+S * generic_graph<V,W,S,WT,I>::get_structure() const
+{
+    return _struct;
+}
+
+template <typename V, typename W, typename S, typename WT, typename I>
+void generic_graph<V,W,S,WT,I>::display(std::ostream & out) const
+{
+    std::vector<V> elements = _idtf.all();
+    for (size_t i = 0; i < elements.size(); ++i) {
+        out << '[' << i << ']' << elements[i] << ' ';
     }
-
-    static graph_adj_list<T,N> * read();
-
-private:
-    N ** _heads;
-};
-
-template <typename T, typename N = adj_list_node>
-class ugraph_adj_list : public graph_adj_list<T,N>
-{
-public:
-    template <typename Iter>
-    ugraph_adj_list(Iter begin, Iter end)
-        : graph_adj_list<T,N>(begin, end)
-    {}
-
-    void add(const T & t1, const T & t2);
-
-    int get(const T & t1, const T & t2) const;
-
-    static ugraph_adj_list<T,N> * read();
-
-};
-
-
-template <typename T, typename G>
-G * _read_graph();
-
-
-#include "impl/__mapper.h"
-#include "impl/__graph.h"
-#include "impl/__g_adj_matrix.h"
-#include "impl/__g_adj_list.h"
-#include "impl/__n_adj_matrix.h"
-#include "impl/__n_adj_list.h"
+    out << '\n';
+    _struct->display(out);
+}
 
 }  // namespace ::mustard::graph
 }  // namespace ::mustard
 
 #endif  // ifndef MUSTARD_GRAPH_H
+

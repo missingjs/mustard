@@ -13,6 +13,9 @@ public:
 
     identifier();
 
+    template <typename Iter>
+        identifier(Iter begin, Iter end);
+
     ~identifier();
 
     int add(const T & t);
@@ -40,6 +43,9 @@ public:
 
     identifier();
 
+    template <typename Iter>
+        identifier(Iter begin, Iter end);
+
     ~identifier();
 
     int add(int e);
@@ -54,6 +60,10 @@ public:
 
 private:
 
+    void init_arr();
+
+private:
+
     int * _arr;
 
     std::vector<int> _elements;
@@ -64,13 +74,34 @@ template <>
 class identifier<char> : public identifier<int>
 {
 public:
+    
+    identifier()
+        : identifier<int>()
+    {}
+
+    template <typename Iter> 
+        identifier(Iter begin, Iter end)
+        : identifier<int>(begin, end)
+        {}
+
     std::vector<char> all() const;
+
 };
 
 template <typename T>
 identifier<T>::identifier()
     : _arr()
 {}
+
+template <typename T>
+    template <typename Iter>
+identifier<T>::identifier(Iter begin, Iter end)
+    : _arr()
+{
+    for (Iter i(begin); i != end; ++i) {
+        add(*i);
+    }
+}
 
 template <typename T>
 identifier<T>::~identifier()
@@ -115,6 +146,16 @@ template <typename T>
 T identifier<T>::element(int i) const
 {
     return _arr[i];
+}
+
+template <typename Iter>
+identifier<int>::identifier(Iter begin, Iter end)
+    : _arr(NULL), _elements()
+{
+    init_arr();
+    for (Iter i(begin); i != end; ++i) {
+        add(*i);
+    }
 }
 
 } // namespace ::mustard::id

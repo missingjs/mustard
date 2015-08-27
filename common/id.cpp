@@ -1,11 +1,19 @@
+#include <algorithm>
+
 #include "id.h"
 
 namespace mustard {
 namespace id {
 
 identifier<int>::identifier()
-    : _arr(new int[arr_size]), _elements()
+    : _arr(NULL), _elements()
 {
+    init_arr();
+}
+
+void identifier<int>::init_arr()
+{
+    _arr = new int[arr_size];
     for (int i = 0; i < arr_size; ++i) {
         _arr[i] = -1;
     }
