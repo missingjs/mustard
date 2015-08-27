@@ -42,6 +42,11 @@ public:
 
     W get(const V & v1, const V & v2) const;
 
+    static W unconnected_value()
+    {
+        return WeightTraits::unconnected_value();
+    }
+
     void remove(const V & v1, const V & v2);
 
     struct_t * get_structure() const;
@@ -64,6 +69,12 @@ struct numeric_weight
     {
         return std::numeric_limits<W>::max();
     }
+
+    static W unconnected_value()
+    {
+        return initial_value();
+    }
+
 };
 
 
@@ -111,6 +122,12 @@ struct boolean_weight
     {
         return T(0);
     }
+
+    static T unconnected_value()
+    {
+        return initial_value();
+    }
+
 };
 
 template <typename S>

@@ -118,6 +118,73 @@ public:
 };
 
 
+template <>
+class directed_graph_adaptor< adj_list<bool> >
+    : public directed_network_adaptor< bool, adj_list<bool> >
+{
+    typedef directed_network_adaptor< bool, adj_list<bool> >  base_t;
+
+public:
+
+    directed_graph_adaptor(int n, bool b)
+        : base_t(n,b)
+    {}
+
+    ~directed_graph_adaptor() {}
+
+    void set(int i, int j)
+    {
+        base_t::set(i, j, true);
+    }
+
+    void display(std::ostream & out) const
+    {
+        typedef typename adj_list<bool>::node node_t;
+        for (int i = 0; i < _a.size(); ++i) {
+            out << i << ' ';
+            if (!_a._heads[i]) {
+                out << '^' << '\n';
+            } else {
+                out << "-> ";
+                node_t * p = _a._heads[i];
+                while (p) {
+                    out << '[' << p->adj << ']';
+                    if (p->next) {
+                        out << ", ";
+                    }
+                    p = p->next;
+                }
+                out << '\n';
+            }
+        }
+    }
+
+};
+
+
+template <>
+class undirected_graph_adaptor< adj_list<bool> >
+    : public directed_graph_adaptor< adj_list<bool> >
+{
+    typedef directed_graph_adaptor< adj_list<bool> >  base_t;
+
+public:
+
+    undirected_graph_adaptor(int n, bool b)
+        : base_t(n,b)
+    {}
+
+    ~undirected_graph_adaptor() {}
+
+    void set(int i, int j)
+    {
+        base_t::set(i, j);
+        base_t::set(j, i);
+    }
+
+};
+
+
 template <typename T>
 adj_list<T>::adj_list(int n)
     : _heads(new node*[n]), _size(n)
@@ -219,4 +286,27 @@ display(std::ostream & out) const
         }
     }
 }
+/*
+void directed_graph_adaptor< adj_list<bool> >::
+display(std::ostream & out) const
+{
+    typedef typename adj_list<bool>::node node_t;
+    for (int i = 0; i < _a.size(); ++i) {
+        out << i << ' ';
+        if (!_a._heads[i]) {
+            out << '^' << '\n';
+        } else {
+            out << "-> ";
+            node_t * p = _a._heads[i];
+            while (p) {
+                out << '[' << p->adj << ']';
+                if (p->next) {
+                    out << ", ";
+                }   
+                p = p->next;
+            }   
+            out << '\n';
+        }   
+    }
+}*/
 
