@@ -15,9 +15,9 @@ class common_matrix
 {
 private:
 
-    T * _data;
-
     int _row, _col;
+
+    T * _data;
 
 public:
 
@@ -224,8 +224,113 @@ void print_as_common(const sparse_matrix<T> & m);
 template <typename T>
 void print_as_common(const sparse_matrix<T> * m);
 
+
+template <typename T>
+class symmetric_matrix
+{
+private:
+
+    int _n;
+
+    T * _data;
+
+public:
+
+    symmetric_matrix(int n);
+
+    ~symmetric_matrix();
+
+    symmetric_matrix(const symmetric_matrix<T> & m);
+
+    symmetric_matrix<T> & operator=(const symmetric_matrix<T> & m);
+
+    int row() const { return _n; }
+
+    int col() const { return _n; }
+
+    struct _matrix_row
+    {
+        int _row;
+
+        symmetric_matrix<T> & _mx;
+
+        _matrix_row(int row, symmetric_matrix<T> & mx)
+            : _row(row), _mx(mx)
+        {}
+
+        _matrix_row(const _matrix_row & r)
+            : _row(r._row), _mx(r._mx)
+        {}
+
+        T & operator[](int col)
+        {
+            return _mx.d(_row, col);
+        }
+
+    private:
+        _matrix_row & operator=(const _matrix_row & r);
+
+    };
+
+    struct _const_matrix_row
+    {
+        int _row;
+
+        const symmetric_matrix<T> & _mx;
+
+        _const_matrix_row(int row, const _const_matrix_row & mx)
+            : _row(row), _mx(mx)
+        {}
+
+        _const_matrix_row(const _const_matrix_row & r)
+            : _row(r._row), _mx(r._mx)
+        {}
+
+        T operator[](int col) const
+        {
+            return _mx.d(_row, col);
+        }
+
+    private:
+        _const_matrix_row & operator=(const _const_matrix_row & r);
+
+    };
+
+    _matrix_row operator[](int row)
+    {
+        return _matrix_row(row, *this);
+    }
+
+    _const_matrix_row operator[](int row) const
+    {
+        return _const_matrix_row(row, *this);
+    }
+
+private:
+
+    T & d(int r, int c)
+    {
+        if (r < c) {
+            int t = r;
+            r = c;
+            c = t;
+        }
+        return _data[r * (r + 1)/2 + c];
+    }
+
+    T d(int r, int c) const
+    {
+        return const_cast<symmetric_matrix<T>*>(this)->d(r,c);
+    }
+
+    void swap(symmetric_matrix<T> & m);
+
+};
+
+
 #include "impl/__common_matrix_impl.h"
 #include "impl/__sparse_matrix_impl.h"
+#include "impl/__symmetric_matrix.h"
 
 } // namespace ::mustard::matrix
 

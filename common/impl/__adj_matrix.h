@@ -1,27 +1,39 @@
-template <typename T>
-struct adj_matrix
+template <typename W>
+class directed_network_adaptor<W, matrix::common_matrix<W> >
 {
-    adj_matrix(int n, const T & t);
+public:
 
-    ~adj_matrix()
+    typedef matrix::common_matrix<W> struct_t;
+
+    directed_network_adaptor(int n, const W & t);
+
+    ~directed_network_adaptor()
     {}
 
-    void set(int i, int j, const T & t);
+    void set(int i, int j, const W & t);
 
-    T get(int i, int j) const;
+    W get(int i, int j) const;
 
     void remove(int i, int j);
 
     void display(std::ostream & out) const;
 
-    matrix::common_matrix<T> _mx;
+    struct_t * get_structure() const
+    {
+        return &_mx;
+    }
 
-    T _unconnect;
+private:
+
+    struct_t   _mx;
+
+    W  _unconnect;
 
 };
 
-template <typename T>
-adj_matrix<T>::adj_matrix(int n, const T & t)
+template <typename W>
+directed_network_adaptor<W, matrix::common_matrix<W> >::
+    directed_network_adaptor(int n, const W & t)
     : _mx(n, n), _unconnect(t)
 {
     for (int i = 0; i < n; ++i) {
@@ -31,26 +43,30 @@ adj_matrix<T>::adj_matrix(int n, const T & t)
     }
 }
 
-template <typename T>
-void adj_matrix<T>::set(int i, int j, const T & t)
+template <typename W>
+void directed_network_adaptor<W, matrix::common_matrix<W> >::
+set(int i, int j, const W & t)
 {
     _mx[i][j] = t;
 }
 
-template <typename T>
-T adj_matrix<T>::get(int i, int j) const
+template <typename W>
+W directed_network_adaptor<W, matrix::common_matrix<W> >::
+get(int i, int j) const
 {
     return _mx[i][j];
 }
 
-template <typename T>
-void adj_matrix<T>::remove(int i, int j)
+template <typename W>
+void directed_network_adaptor<W, matrix::common_matrix<W> >::
+remove(int i, int j)
 {
     _mx[i][j] = _unconnect;
 }
 
-template <typename T>
-void adj_matrix<T>::display(std::ostream & out) const
+template <typename W>
+void directed_network_adaptor<W, matrix::common_matrix<W> >::
+display(std::ostream & out) const
 {
     for (int i = 0; i < _mx.row(); ++i) {
         for (int j = 0; j < _mx.col(); ++j) {

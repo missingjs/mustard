@@ -16,7 +16,7 @@ namespace graph {
 template <
     typename V, 
     typename W,
-    typename Structure,
+    typename Adaptor,
     typename WeightTraits, 
     typename Identifier = id::identifier<V>
 >
@@ -28,6 +28,7 @@ public:
 
     typedef W weight_t;
 
+    typedef typename Adaptor::struct_t struct_t;
 
 public:
     template <typename Iter>
@@ -45,7 +46,7 @@ public:
 
     void remove(const V & v1, const V & v2);
 
-    Structure * get_structure() const;
+    struct_t * get_structure() const;
 
     void display(std::ostream & out) const;
 
@@ -53,18 +54,40 @@ private:
 
     Identifier _idtf;
 
-    Structure * _struct;
+    Adaptor * _adpt;
 
 };
 
 
+template <typename W, typename S>
+class directed_network_adaptor
+{};
+/*
+{
+    struct_adaptor(int n, const W & w); 
+
+    void set(int i, int j, const W & w); 
+
+    W get(int i, int j) const;
+
+    void remove(int i, int j);
+
+    S * get_structure() const;
+
+    void display(std::ostream & out) const;
+}; */
+
+
 template <typename V, typename W, typename S>
-class directed_network : public generic_graph< V, W, S, numeric_weight<W> >
+class directed_network : 
+    public generic_graph< V, W, 
+        directed_network_adaptor<W,S>, numeric_weight<W> >
 {
 public:
     template <typename Iter>
     directed_network(int n, Iter begin, Iter end)
-        : generic_graph< V,W,S,numeric_weight<W> >(n, begin, end)
+        : generic_graph< V, W, directed_network_adaptor<W,S>,
+            numeric_weight<W> >(n, begin, end)
     {}
 };
 
@@ -96,64 +119,65 @@ Network * read_network()
 #include "impl/__adj_matrix.h"
 
 
-template <typename V, typename W, typename S, typename WT, typename I>
+template <typename V, typename W, typename AD, typename WT, typename I>
     template <typename Iter>
-generic_graph<V,W,S,WT,I>::generic_graph(int n, Iter begin, Iter end)
-    : _idtf(begin, end), _struct(new S(n, WT::initial_value()))
+generic_graph<V,W,AD,WT,I>::generic_graph(int n, Iter begin, Iter end)
+    : _idtf(begin, end), _adpt(new AD(n, WT::initial_value()))
 {
 }
 
-template <typename V, typename W, typename S, typename WT, typename I>
-generic_graph<V,W,S,WT,I>::~generic_graph()
+template <typename V, typename W, typename AD, typename WT, typename I>
+generic_graph<V,W,AD,WT,I>::~generic_graph()
 {
-    delete _struct;
+    delete _adpt;
 }
 
-template <typename V, typename W, typename S, typename WT, typename I>
-int generic_graph<V,W,S,WT,I>::id(const V & v) const
+template <typename V, typename W, typename AD, typename WT, typename I>
+int generic_graph<V,W,AD,WT,I>::id(const V & v) const
 {
     return _idtf.id(v);
 }
 
-template <typename V, typename W, typename S, typename WT, typename I>
-V generic_graph<V,W,S,WT,I>::vex(int id) const
+template <typename V, typename W, typename AD, typename WT, typename I>
+V generic_graph<V,W,AD,WT,I>::vex(int id) const
 {
     return _idtf.element(id);
 }
 
-template <typename V, typename W, typename S, typename WT, typename I>
-void generic_graph<V,W,S,WT,I>::set(const V & v1, const V & v2, const W & w)
+template <typename V, typename W, typename AD, typename WT, typename I>
+void generic_graph<V,W,AD,WT,I>::set(const V & v1, const V & v2, const W & w)
 {
-    _struct->set(_idtf.id(v1), _idtf.id(v2), w);
+    _adpt->set(_idtf.id(v1), _idtf.id(v2), w);
 }
 
-template <typename V, typename W, typename S, typename WT, typename I>
-W generic_graph<V,W,S,WT,I>::get(const V & v1, const V & v2) const
+template <typename V, typename W, typename AD, typename WT, typename I>
+W generic_graph<V,W,AD,WT,I>::get(const V & v1, const V & v2) const
 {
-    return _struct->get(_idtf.id(v1), _idtf.id(v2));
+    return _adpt->get(_idtf.id(v1), _idtf.id(v2));
 }
 
-template <typename V, typename W, typename S, typename WT, typename I>
-void generic_graph<V,W,S,WT,I>::remove(const V & v1, const V & v2)
+template <typename V, typename W, typename AD, typename WT, typename I>
+void generic_graph<V,W,AD,WT,I>::remove(const V & v1, const V & v2)
 {
-    _struct->remove(_idtf.id(v1), _idtf.id(v2));
+    _adpt->remove(_idtf.id(v1), _idtf.id(v2));
 }
 
-template <typename V, typename W, typename S, typename WT, typename I>
-S * generic_graph<V,W,S,WT,I>::get_structure() const
+template <typename V, typename W, typename AD, typename WT, typename I>
+typename generic_graph<V,W,AD,WT,I>::struct_t * 
+generic_graph<V,W,AD,WT,I>::get_structure() const
 {
-    return _struct;
+    return _adpt->get_structure();
 }
 
-template <typename V, typename W, typename S, typename WT, typename I>
-void generic_graph<V,W,S,WT,I>::display(std::ostream & out) const
+template <typename V, typename W, typename AD, typename WT, typename I>
+void generic_graph<V,W,AD,WT,I>::display(std::ostream & out) const
 {
     std::vector<V> elements = _idtf.all();
     for (size_t i = 0; i < elements.size(); ++i) {
         out << '[' << i << ']' << elements[i] << ' ';
     }
     out << '\n';
-    _struct->display(out);
+    _adpt->display(out);
 }
 
 }  // namespace ::mustard::graph
