@@ -29,15 +29,13 @@ public:
         return _size;
     }
 
-
 private:
 
     node * _find(int i, int j) const;
 
-
 public:
 
-    node * _heads;
+    node ** _heads;
 
     int    _size;
 
@@ -80,7 +78,7 @@ public:
         return & _a;
     }
 
-private:
+protected:
 
     struct_t _a;
 
@@ -89,9 +87,40 @@ private:
 };
 
 
+template <typename W>
+class undirected_network_adaptor< W, adj_list<W> > : 
+    public directed_network_adaptor< W, adj_list<W> >
+{
+    typedef directed_network_adaptor< W, adj_list<W> >  base_t;
+
+    using base_t::_a;
+
+public:
+
+    undirected_network_adaptor(int n, const W & w)
+        : base_t(n, w)
+    {}
+
+    ~undirected_network_adaptor() {}
+
+    void set(int i, int j, const W & w)
+    {
+        _a.set(i, j, w);
+        _a.set(j, i, w);
+    }
+
+    void remove(int i, int j)
+    {
+        _a.remove(i,j);
+        _a.remove(j,i);
+    }
+
+};
+
+
 template <typename T>
 adj_list<T>::adj_list(int n)
-    : _heads(new node[n]), _size(n)
+    : _heads(new node*[n]), _size(n)
 {}
 
 template <typename T>
@@ -116,9 +145,9 @@ void adj_list<T>::set(int i, int j, const T & t)
         n->weight = t;
     } else {
         n = new node(t);
-        node->adj = j;
-        node->next = _heads[i];
-        _heads[i] = node;
+        n->adj = j;
+        n->next = _heads[i];
+        _heads[i] = n;
     }
 }
 
@@ -180,7 +209,7 @@ display(std::ostream & out) const
             out << "-> ";
             node_t * p = _a._heads[i];
             while (p) {
-                out << '(' << p->adj << ',' << p->weight << ')';
+                out << '[' << p->adj << ']' << p->weight;
                 if (p->next) {
                     out << ", ";
                 }

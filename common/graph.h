@@ -218,6 +218,7 @@ Graph * read_graph()
 
 
 #include "impl/__adj_matrix.h"
+#include "impl/__adj_list.h"
 
 
 template <typename V, typename W, typename AD, typename WT, typename I>
