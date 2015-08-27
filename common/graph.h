@@ -11,8 +11,6 @@
 namespace mustard {
 namespace graph {
 
-#include "impl/__graph_network.h"
-
 template <
     typename V, 
     typename W,
@@ -56,6 +54,16 @@ private:
 
     Adaptor * _adpt;
 
+};
+
+
+template <typename W>
+struct numeric_weight
+{
+    static W initial_value()
+    {
+        return std::numeric_limits<W>::max();
+    }
 };
 
 
