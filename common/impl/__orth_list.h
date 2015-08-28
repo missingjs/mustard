@@ -81,18 +81,53 @@ public:
         _orz.remove(i, j);
     }
 
-    void display(std::ostream & out) const;
+    void display(std::ostream & out) const
+    {
+        custom_display(_orz, out);
+    }
 
     struct_t * get_structure() const
     {
         return & _orz;
     }
 
+    static void custom_display(
+            const orthogonal_list<W> & orz, 
+            std::ostream & out, 
+            bool show_weight = true);
+
 protected:
 
     struct_t  _orz;
 
     W _unconnect;
+
+};
+
+
+template <>
+class directed_graph_adaptor< orthogonal_list<bool> >
+    : public directed_network_adaptor< bool, orthogonal_list<bool> >
+{
+    typedef directed_network_adaptor< bool, orthogonal_list<bool> >  base_t;
+
+public:
+
+    directed_graph_adaptor(int n, bool b)
+        : base_t(n,b)
+    {}
+
+    ~directed_graph_adaptor() {}
+
+    void set(int i, int j)
+    {
+        base_t::set(i, j, true);
+    }
+
+    void display(std::ostream & out) const
+    {
+        base_t::custom_display(base_t::_orz, out, false);
+    }
 
 };
 
@@ -191,10 +226,53 @@ orthogonal_list<W>::_find(int i, int j) const
 
 template <typename W>
 void directed_network_adaptor< W, orthogonal_list<W> >::
-display(std::ostream & out) const
+custom_display(
+        const orthogonal_list<W> & _orz, 
+        std::ostream & out,
+        bool show_weight)
 {
     typedef typename orthogonal_list<W>::arc_node arc_t;
 
+    for (int i = 0; i < _orz.size(); ++i) {
+        out << '[' << i << "]B ";
+        arc_t * p = _orz._head_list[i].blist;
+        if (p) {
+            out << "-> ";
+            while (p) {
+                out << '[' << p->end << ']';
+                if (show_weight) {
+                    out << p->weight;
+                }
+                if (p->bnext) {
+                    out << ", ";
+                }
+                p = p->bnext;
+            }
+        } else {
+            out << '^';
+        }
+        out << '\n';
+
+        out << '[' << i << "]E ";
+        p = _orz._head_list[i].elist;
+        if (p) {
+            out << "-> ";
+            while (p) {
+                out << '[' << p->begin << ']';
+                if (show_weight) {
+                    out << p->weight;
+                }
+                if (p->enext) {
+                    out << ", ";
+                }
+                p = p->enext;
+            }
+        } else {
+            out << '^';
+        }
+        out << '\n';
+    }
+    /*
     int size = _orz.size();
     int total = size * size;
     W * w = new W[total];
@@ -220,6 +298,6 @@ display(std::ostream & out) const
             }
         }
         std::cout << '\n';
-    }
+    } */
 }
 

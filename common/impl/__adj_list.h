@@ -286,27 +286,4 @@ display(std::ostream & out) const
         }
     }
 }
-/*
-void directed_graph_adaptor< adj_list<bool> >::
-display(std::ostream & out) const
-{
-    typedef typename adj_list<bool>::node node_t;
-    for (int i = 0; i < _a.size(); ++i) {
-        out << i << ' ';
-        if (!_a._heads[i]) {
-            out << '^' << '\n';
-        } else {
-            out << "-> ";
-            node_t * p = _a._heads[i];
-            while (p) {
-                out << '[' << p->adj << ']';
-                if (p->next) {
-                    out << ", ";
-                }   
-                p = p->next;
-            }   
-            out << '\n';
-        }   
-    }
-}*/
 
