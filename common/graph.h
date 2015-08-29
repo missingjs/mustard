@@ -38,6 +38,11 @@ public:
 
     V vex(int id) const;
 
+    int vex_count() const
+    {
+        return _idtf.size();
+    }
+
     void set(const V & v1, const V & v2, const W & w);
 
     W get(const V & v1, const V & v2) const;

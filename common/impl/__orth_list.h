@@ -88,7 +88,7 @@ public:
 
     struct_t * get_structure() const
     {
-        return & _orz;
+        return const_cast<struct_t*>(&_orz);
     }
 
     static void custom_display(
