@@ -69,7 +69,7 @@ public:
 
     struct_t * get_structure() const
     {
-        return & _mx;
+        return const_cast<struct_t*>(&_mx);
     }
 
     void display(std::ostream & out) const;
