@@ -1,0 +1,79 @@
+6
+a b c d e f
+10
+a b 6
+a c 1
+a d 5
+b c 5
+b e 3
+c d 5
+c e 6
+c f 4
+d f 2
+e f 6
+
+5
+a b c d e
+7
+a b 12
+a c 16
+a d 18
+b c 2
+b e 22
+c d 4
+d e 10
+
+2
+a b
+1
+a b 5
+
+2 
+a b
+0
+
+6
+a b c d e f
+9
+a b 10
+a d 20
+a f 2
+b c 3
+b d 5
+c e 15
+d e 11
+d f 10
+e f 3
+
+6
+B N P L T M
+15
+B N 109
+B P 82
+B L 81
+B T 21
+B M 124
+N P 58
+N L 55
+N T 108
+N M 32
+P L 3
+P T 97
+P M 92
+L T 95
+L M 89
+T M 113
+
+6
+a b c d e f
+10
+a b 6
+a c 1
+a d 5
+b c 5
+b e 3
+c d 5
+c e 6
+c f 4
+d f 2
+e f 6
