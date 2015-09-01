@@ -1,7 +1,11 @@
 template <typename T>
-common_matrix<T>::common_matrix(int row, int col)
+common_matrix<T>::common_matrix(int row, int col, const T & t)
     : _row(row), _col(col), _data(new T[row * col])
 {
+    int total = row * col;
+    for (int i = 0; i < total; ++i) {
+        _data[i] = t;
+    }
 }
 
 template <typename T>

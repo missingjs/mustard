@@ -1,7 +1,12 @@
 template <typename T>
-symmetric_matrix<T>::symmetric_matrix(int n)
+symmetric_matrix<T>::symmetric_matrix(int n, const T & t)
     : _n(n), _data(new T[n*(n+1)/2])
-{}
+{
+    int total = n * (n+1) / 2;
+    for (int i = 0; i < total; ++i) {
+        _data[i] = t;
+    }
+}
 
 template <typename T>
 symmetric_matrix<T>::~symmetric_matrix()

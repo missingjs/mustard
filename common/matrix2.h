@@ -21,7 +21,7 @@ private:
 
 public:
 
-    common_matrix(int row, int col);
+    common_matrix(int row, int col, const T & t = T());
 
     ~common_matrix();
 
@@ -236,7 +236,7 @@ private:
 
 public:
 
-    symmetric_matrix(int n);
+    symmetric_matrix(int n, const T & t = T());
 
     ~symmetric_matrix();
 
