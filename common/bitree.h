@@ -430,7 +430,20 @@ void print(node<T> * root, format_type type = HIERARCHY_FORMAT)
             print_hierarchy(root);
             break;
         case CHILD_SIBLING_FORMAT:
-            print_child_sibling(root);
+            if (!root->rc) {
+                print_child_sibling(root);
+            } else {
+                node<T> * p = root;
+                std::cout << '(';
+                while (p) {
+                    print_child_sibling(p);
+                    if (p->rc) {
+                        std::cout << ',';
+                    }
+                    p = p->rc;
+                }
+                std::cout << ')';
+            }
             std::cout << '\n';
             break;
         default:
