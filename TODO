@@ -1,8 +1,8 @@
-'#' as comment flag in '*.input' file
 template for test case generation, by 'mustard.py'
 use makefile to compile
 
 Finished
 ========
+'#' as comment flag in '*.input' file
 customize bitree node by inherit from bitree::node<T>
 separate compile and run by parameter, while using 'mustard.py'
