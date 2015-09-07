@@ -11,6 +11,7 @@ int main()
     b_node * root = create_b_tree(arr, n);
 
     b_print (root);
+    std::cout << '\n';
 
     b_free(root);
     delete[] arr;

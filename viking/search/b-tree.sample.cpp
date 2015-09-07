@@ -26,6 +26,7 @@ void _insert_key(b_node * p, int k, int i)
         p->key[j+1] = p->key[j];
     }
     p->key[i] = k;
+    ++p->n;
 }
 
 void _insert_child(b_node * p, int k, b_node * left, b_node * right)
@@ -42,6 +43,10 @@ void _insert_child(b_node * p, int k, b_node * left, b_node * right)
     p->key[j] = k;
     p->ptr[j] = right;
     p->ptr[j-1] = left;
+
+    left->parent = right->parent = p;
+
+    ++p->n;
 }
 
 void _split(b_node * p, int & k, b_node * & left, b_node * & right)
@@ -53,6 +58,9 @@ void _split(b_node * p, int & k, b_node * & left, b_node * & right)
     right->key[1] = p->key[3];
     right->ptr[0] = p->ptr[2];
     right->ptr[1] = p->ptr[3];
+    if (right->ptr[0]) {
+        right->ptr[0]->parent = right->ptr[1]->parent = right;
+    }
 
     left = p;
     left->n = 1;
@@ -124,6 +132,9 @@ void b_print(b_node * btree)
 
 void b_free(b_node * root)
 {
+    if (!root) {
+        return;
+    }
     for (int i = 0; i <= root->n; ++i) {
         b_free(root->ptr[i]);
     }
