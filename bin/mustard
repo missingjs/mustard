@@ -9,7 +9,7 @@ BASE_PATH = os.path.dirname(os.path.realpath(sys.argv[0]))
 BASE_PATH = os.path.dirname(BASE_PATH)
 
 
-def case_compile(module):
+def case_compile(module, debug=False):
     test_file = module + '.test.cpp'
     if not os.path.exists(test_file):
         code = os.system('ln -s ' + module + '.sample.cpp ' + test_file)
@@ -20,7 +20,8 @@ def case_compile(module):
     dic['include'] = '-I. -I' + BASE_PATH
     dic['library'] = '-L' + BASE_PATH + '/common -lmustard'
     dic['sources'] = '{0}.cpp {0}.test.cpp'.format(module)
-    command = 'g++ -o {target} -std=c++11 {include} {sources} {library}'.format(**dic)
+    dic['debug'] = '-g' if debug else ''
+    command = 'g++ {debug} -o {target} -std=c++11 {include} {sources} {library}'.format(**dic)
     code = os.system(command)
     if code != 0:
         exit()
@@ -72,7 +73,7 @@ def case_run(module, n_input):
 def mustard_main():
     '''mustard main entry
 Usage:
-    mustard [-r] [-c] [--input=<N>] <case>
+    mustard [-r] [-c] [-g] [--input=<N>] <case>
     mustard -h | --help
     mustard --version
 Options:
@@ -80,6 +81,7 @@ Options:
     --version    Show version.
     -r           Run case specified by <case>.
     -c           Compile case files.
+    -g           Compile with '-g' option
     --input=<N>  Use (N)th input, first is 1.
 '''
 
@@ -89,9 +91,10 @@ Options:
     do_compile = arguments['-c']
     module = arguments['<case>']
     n_input = arguments['--input']
+    debug = arguments['-g']
 
     if do_compile:
-        case_compile(module)
+        case_compile(module, bool(debug))
 
     if do_run:
         case_run(module, n_input)
