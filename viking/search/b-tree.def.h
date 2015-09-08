@@ -18,3 +18,4 @@ struct b_node
 b_node * create_b_tree(int * arr, int n);
 void b_print(b_node * btree);
 void b_free(b_node * root);
+b_node * remove_element(b_node * root, int * arr, int n);
