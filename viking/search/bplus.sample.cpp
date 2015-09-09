@@ -242,3 +242,39 @@ void bp_free(bp_tree * tree)
     }
     delete tree;
 }
+
+void _rm_from_bplus(bp_tree * tree, int k)
+{
+    bp_node * p = NULL;
+    int i = -1;
+
+    if (!_find(tree->root, k, p, i)) {
+        return;
+    }
+
+    // TODO
+    int max = p->max_key();
+    _remove_key(p, i, k);
+    if (p->max_key() != max) {
+        _update_key(p->parent, max, p->max_key());
+    }
+
+    while (p->n == 1) {
+        // TODO
+        if ()
+        _process_weak_node(p);
+        p = p->parent;
+    }
+}
+
+void remove_from_b_plus(bp_tree * tree, int * arr, int n)
+{
+    if (!tree || !arr) {
+        return;
+    }
+
+    for (int i = 0; i < n; ++i) {
+        // TODO
+        _rm_from_bplus(tree, arr[i]);
+    }
+}

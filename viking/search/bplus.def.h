@@ -33,3 +33,4 @@ struct bp_tree
 bp_tree * create_b_plus(int * arr, int n);
 void bp_print(bp_tree * tree);
 void bp_free(bp_tree * tree);
+void remove_from_b_plus(bp_tree * tree, int * arr, int n);
