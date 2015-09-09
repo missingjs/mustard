@@ -243,6 +243,118 @@ void bp_free(bp_tree * tree)
     delete tree;
 }
 
+int _index_of_child(bp_node * p)
+{
+    bp_node * parent = p->parent;
+    for (int i = 0; i < parent->n; ++i) {
+        if (parent->ptr[i] == p) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+void _process_weak_node(bp_node * p)
+{
+    int i = _index_of_child(p);
+    bp_node * parent = p->parent;
+
+    if (i < parent->n - 1) {  // has right sibling
+        bp_node * rsib = parent->ptr[i+1];
+        if (rsib->n == 3) {  // right sibling has enough children
+            // move right sibling's left child to p
+            p->key[1] = rsib->key[0];
+            p->ptr[1] = rsib->ptr[0];
+            if (p->ptr[1]) {
+                p->ptr[1]->parent = p;
+            }
+            ++p->n;
+            // update p's max key in parent
+            int old_max = p->key[0], new_max = p->key[1];
+            _update_key(parent, old_max, new_max);
+            
+            // fill blank location in rsib
+            rsib->key[0] = rsib->key[1];
+            rsib->key[1] = rsib->key[2];
+            rsib->ptr[0] = rsib->ptr[1];
+            rsib->ptr[1] = rsib->ptr[2];
+            --rsib->n;
+        } 
+        else {  // no enough children in right sibling
+            // move data in p to right sibling
+            for (int j = rsib->n; j > 0; ++j) {
+                rsib->key[j] = rsib->key[j-1];
+                rsib->ptr[j] = rsib->ptr[j-1];
+            }
+            rsib->key[0] = p->key[0];
+            rsib->ptr[0] = p->ptr[0];
+            if (rsib->ptr[0]) {
+                rsib->ptr[0]->parent = rsib;
+            }
+            ++rsib->n;
+
+            // remove p then update key in parent
+            delete p;
+            for (int j = i + 1; j < parent->n; ++j) {
+                parent->key[j-1] = parent->key[j];
+                parent->ptr[j-1] = parent->ptr[j];
+            }
+            --parent->n;
+        }
+    }
+    else {  // p has no right sibling, just left
+        bp_node * Lsib = parent->ptr[i-1];
+        if (Lsib->n == 3) {  // left sibling has enouph children
+            // move left sibling's right child to p
+            p->key[1] = p->key[0];
+            p->ptr[1] = p->ptr[0];
+            p->key[0] = Lsib->key[Lsib->n-1];
+            p->ptr[0] = Lsib->ptr[Lsib->n-1];
+            if (p->ptr[0]) {
+                p->ptr[0]->parent = p;
+            }
+            ++p->n;
+
+            // update left sibling
+            int old_max = Lsib->key[Lsib->n-1];
+            int new_max = Lsib->key[Lsib->n-2];
+            _update_key(parent, old_max, new_max);
+            --Lsib->n;
+        }
+        else {  // no enough children in left sibling
+            // move data in p to left sibling
+            Lsib->key[Lsib->n] = p->key[0];
+            Lsib->ptr[Lsib->n] = p->ptr[0];
+            if (p->ptr[0]) {
+                p->ptr[0]->parent = Lsib;
+            }
+            ++Lsib->n;
+
+            // update key of left sibling in parent
+            int old_key = Lsib->key[Lsib->n-2];
+            int new_key = Lsib->key[Lsib->n-1];
+            _update_key(parent, old_key, new_key);
+
+            // drop p then update key in parent
+            delete p;
+            for (int j = i + 1; j < parent->n; ++j) {
+                parent->key[j-1] = parent->key[j];
+                parent->ptr[j-1] = parent->ptr[j];
+            }
+            --parent->n;
+        }
+    }
+}
+
+void _remove_key(bp_node * p, int i)
+{
+    for (int j = i + 1; j < p->n; ++j) {
+        p->key[j-1] = p->key[j];
+        p->ptr[j-1] = p->ptr[j];
+    }
+    --p->n;
+}
+
 void _rm_from_bplus(bp_tree * tree, int k)
 {
     bp_node * p = NULL;
@@ -252,16 +364,21 @@ void _rm_from_bplus(bp_tree * tree, int k)
         return;
     }
 
-    // TODO
     int max = p->max_key();
-    _remove_key(p, i, k);
+    _remove_key(p, i);
     if (p->max_key() != max) {
         _update_key(p->parent, max, p->max_key());
     }
 
     while (p->n == 1) {
-        // TODO
-        if ()
+        if (p == tree->root) {
+            tree->root = p->ptr[0];
+            delete p;
+            if (!tree->root) {
+                tree->sqt = NULL;
+            }
+            break;
+        }
         _process_weak_node(p);
         p = p->parent;
     }
@@ -274,7 +391,6 @@ void remove_from_b_plus(bp_tree * tree, int * arr, int n)
     }
 
     for (int i = 0; i < n; ++i) {
-        // TODO
         _rm_from_bplus(tree, arr[i]);
     }
 }
