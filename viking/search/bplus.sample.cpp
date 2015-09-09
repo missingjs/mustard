@@ -254,7 +254,20 @@ int _index_of_child(bp_node * p)
     return -1;
 }
 
-void _process_weak_node(bp_node * p)
+bp_node ** _get_handle(bp_tree * tree, bp_node * p)
+{
+    if (tree->sqt == p) {
+        return &tree->sqt;
+    }
+
+    bp_node * t = tree->sqt;
+    while (t->next != p) {
+        t = t->next;
+    }
+    return &t->next;
+}
+
+void _process_weak_node(bp_tree * tree, bp_node * p)
 {
     int i = _index_of_child(p);
     bp_node * parent = p->parent;
@@ -282,7 +295,7 @@ void _process_weak_node(bp_node * p)
         } 
         else {  // no enough children in right sibling
             // move data in p to right sibling
-            for (int j = rsib->n; j > 0; ++j) {
+            for (int j = rsib->n; j > 0; --j) {
                 rsib->key[j] = rsib->key[j-1];
                 rsib->ptr[j] = rsib->ptr[j-1];
             }
@@ -293,7 +306,11 @@ void _process_weak_node(bp_node * p)
             }
             ++rsib->n;
 
-            // remove p then update key in parent
+            // remove p then update key in parent, and don't forget leaf links
+            if (_is_leaf(p)) {
+                bp_node ** handle = _get_handle(tree, p);
+                *handle = rsib;
+            }
             delete p;
             for (int j = i + 1; j < parent->n; ++j) {
                 parent->key[j-1] = parent->key[j];
@@ -335,7 +352,10 @@ void _process_weak_node(bp_node * p)
             int new_key = Lsib->key[Lsib->n-1];
             _update_key(parent, old_key, new_key);
 
-            // drop p then update key in parent
+            // drop p then update key in parent, and don't forget leaf links
+            if (_is_leaf(p)) {
+                Lsib->next = p->next;
+            }
             delete p;
             for (int j = i + 1; j < parent->n; ++j) {
                 parent->key[j-1] = parent->key[j];
@@ -364,23 +384,37 @@ void _rm_from_bplus(bp_tree * tree, int k)
         return;
     }
 
+    if (p == tree->root && p->n == 1) {
+        delete tree->root;
+        tree->root = tree->sqt = NULL;
+        return;
+    }
+
     int max = p->max_key();
     _remove_key(p, i);
+    if (p == tree->root) {
+        return;
+    }
     if (p->max_key() != max) {
         _update_key(p->parent, max, p->max_key());
     }
 
+    bp_node * t = NULL;
     while (p->n == 1) {
         if (p == tree->root) {
             tree->root = p->ptr[0];
-            delete p;
-            if (!tree->root) {
+            if (tree->root) {
+                tree->root->parent = NULL;
+            }
+            else {
                 tree->sqt = NULL;
             }
+            delete p;
             break;
         }
-        _process_weak_node(p);
+        t = p;
         p = p->parent;
+        _process_weak_node(tree, t);
     }
 }
 
