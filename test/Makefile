@@ -1,22 +1,25 @@
 SOURCES = mm.cpp
 OBJS = $(SOURCES:.cpp=.o)
-INCLUDE = -I. -I/home/venux021/workspace/mustard
-LIBRARY = -L/home/venux021/workspace/mustard/common
+INCLUDE = -I. -I/home/qmtang/workspace/mustard
+LIBRARY = -L/home/qmtang/workspace/mustard/lib -lmustard
 CC = g++
-CPPFLAGS = $(INCLUDE)
+CPPFLAGS = -g -std=c++11 $(INCLUDE)
+TARGET = mm.out
 
-all: main
+all: $(TARGET)
 
 %.d: %.cpp
 	@set -e; rm -f $@; \
-	$(CC) -MM $(CPPFLAGS) $< > $@.$$$$; \
+	$(CC) $(CPPFLAGS) -MM $< > $@.$$$$; \
 	sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' < $@.$$$$ > $@; \
 	rm -f $@.$$$$
 
 sinclude $(SOURCES:.cpp=.d)
 
-main: $(OBJS)
-	$(CC) -o main $(OBJS)
+$(TARGET): $(OBJS)
+	@cd /home/qmtang/workspace/mustard/common; \
+	make; cd -; \
+	$(CC) $(CPPFLAGS) -o $(TARGET) $(OBJS) $(LIBRARY)
 
 clean:
-	rm -f *.o main *.d
+	rm -f *.o $(TARGET) *.d
