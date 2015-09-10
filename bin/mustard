@@ -10,7 +10,7 @@ import mus.make
 BASE_PATH = os.path.dirname(os.path.realpath(sys.argv[0]))
 BASE_PATH = os.path.dirname(BASE_PATH)
 
-def case_make(case_name):
+def case_make(case_name, remake = False):
     test_file = case_name + '.test.cpp'
     if not os.path.exists(test_file):
         sample_file = case_name + '.sample.cpp'
@@ -21,6 +21,9 @@ def case_make(case_name):
     makefile_content = mus.make.get_make_content(case_name)
     with open('Makefile.mus', 'w') as mf:
         mf.write(makefile_content)
+
+    if remake:
+        os.system('make -f Makefile.mus clean')
 
     code = os.system('make -f Makefile.mus')
     if code != 0:
@@ -80,23 +83,25 @@ def case_run(module, n_input):
 def mustard_main():
     '''mustard main entry
 Usage:
-    mustard [-m] [--input=<N>] <case>
+    mustard [-m] [-f] [--input=<N>] <case>
     mustard -h | --help
     mustard --version
 Options:
     -h --help    Show this screen.
     --version    Show version.
     -m           Run 'make' only, will not run the case
+    -f           force re-make
     --input=<N>  Use (N)th input, first is 1.
 '''
 
     arguments = docopt.docopt(mustard_main.__doc__, version="v1.1")
 
     do_make = arguments['-m']
+    re_make = arguments['-f']
     module = arguments['<case>']
     n_input = arguments['--input']
 
-    case_make(module)
+    case_make(module, bool(re_make))
 
     if do_make:
         return
