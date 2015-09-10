@@ -35,3 +35,6 @@
 
 # vim swap file
 .*.swp
+
+# python byte code file
+*.pyc

@@ -5,7 +5,7 @@ BASE_PATH = os.path.dirname(os.path.realpath(sys.argv[0]))
 BASE_PATH = os.path.dirname(BASE_PATH)
 
 makefile_content = \
-'''SOURCES = {__case__}.cpp
+'''SOURCES = {__case__}.cpp {__case__}.test.cpp
 OBJS = $(SOURCES:.cpp=.o)
 INCLUDE = -I. -I{__base_path__}
 LIBRARY = -L{__base_path__}/lib -lmustard
@@ -32,9 +32,8 @@ clean:
 \trm -f *.o $(TARGET) *.d
 '''
 
-if __name__ == '__main__':
+def get_make_content(case_name):
     dic = {}
-    dic['__case__'] = 'mm'
+    dic['__case__'] = case_name
     dic['__base_path__'] = BASE_PATH
-    with open('Makefile2', 'w') as f:    
-        f.write(makefile_content.format(**dic))
+    return makefile_content.format(**dic)

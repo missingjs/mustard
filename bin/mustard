@@ -5,26 +5,36 @@ import subprocess
 import sys
 import docopt
 
+import mus.make
+
 BASE_PATH = os.path.dirname(os.path.realpath(sys.argv[0]))
 BASE_PATH = os.path.dirname(BASE_PATH)
 
-
-def case_compile(module, debug=False):
-    test_file = module + '.test.cpp'
+def case_make(case_name):
+    test_file = case_name + '.test.cpp'
     if not os.path.exists(test_file):
-        code = os.system('ln -s ' + module + '.sample.cpp ' + test_file)
+        sample_file = case_name + '.sample.cpp'
+        code = os.system('ln -s {0} {1}'.format(sample_file, test_file))
         if code != 0:
             exit()
-    dic = {}
-    dic['target'] = module + '.out'
-    dic['include'] = '-I. -I' + BASE_PATH
-    dic['library'] = '-L' + BASE_PATH + '/common -lmustard'
-    dic['sources'] = '{0}.cpp {0}.test.cpp'.format(module)
-    dic['debug'] = '-g' if debug else ''
-    command = 'g++ {debug} -o {target} -std=c++11 {include} {sources} {library}'.format(**dic)
-    code = os.system(command)
+
+    makefile_content = mus.make.get_make_content(case_name)
+    with open('Makefile', 'w') as mf:
+        mf.write(makefile_content)
+
+    code = os.system('make')
     if code != 0:
         exit()
+
+
+
+def env_prepare():
+    lib_key = 'LD_LIBRARY_PATH'
+    if lib_key not in os.environ:
+        os.environ[lib_key] = '';
+    lib_path = os.environ[lib_key]
+    os.environ[lib_key] = '{0}:{1}/lib'.format(lib_path, BASE_PATH)
+
 
 
 def case_run(module, n_input):
@@ -42,10 +52,7 @@ def case_run(module, n_input):
     exe_file = './' + module + '.out'
     inputs = []
     counter = 0
-    lib_key = 'LD_LIBRARY_PATH'
-    if lib_key not in os.environ:
-        os.environ[lib_key] = '';
-    os.environ['LD_LIBRARY_PATH'] += (':'+BASE_PATH+'/common')
+    env_prepare()
     for i in xrange(0, len(lines)):
         if len(lines[i].strip()) == 0:
             counter += 1
@@ -73,35 +80,28 @@ def case_run(module, n_input):
 def mustard_main():
     '''mustard main entry
 Usage:
-    mustard [-r] [-c] [-g] [--input=<N>] <case>
+    mustard [-m] [--input=<N>] <case>
     mustard -h | --help
     mustard --version
 Options:
     -h --help    Show this screen.
     --version    Show version.
-    -r           Run case specified by <case>.
-    -c           Compile case files.
-    -g           Compile with '-g' option
+    -m           Run 'make' only, will not run the case
     --input=<N>  Use (N)th input, first is 1.
 '''
 
-    arguments = docopt.docopt(mustard_main.__doc__, version="v1.0")
+    arguments = docopt.docopt(mustard_main.__doc__, version="v1.1")
 
-    do_run = arguments['-r']
-    do_compile = arguments['-c']
+    do_make = arguments['-m']
     module = arguments['<case>']
     n_input = arguments['--input']
-    debug = arguments['-g']
 
-    if do_compile:
-        case_compile(module, bool(debug))
+    if do_make:
+        case_make(module)
+        return
 
-    if do_run:
-        case_run(module, n_input)
+    case_run(module, n_input)
 
-    if not do_compile and not do_run:
-        case_compile(module)
-        case_run(module, n_input)
 
 
 if __name__ == '__main__':
