@@ -19,10 +19,10 @@ def case_make(case_name):
             exit()
 
     makefile_content = mus.make.get_make_content(case_name)
-    with open('Makefile', 'w') as mf:
+    with open('Makefile.mus', 'w') as mf:
         mf.write(makefile_content)
 
-    code = os.system('make')
+    code = os.system('make -f Makefile.mus')
     if code != 0:
         exit()
 
@@ -96,8 +96,9 @@ Options:
     module = arguments['<case>']
     n_input = arguments['--input']
 
+    case_make(module)
+
     if do_make:
-        case_make(module)
         return
 
     case_run(module, n_input)
