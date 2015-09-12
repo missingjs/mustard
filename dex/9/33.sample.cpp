@@ -10,7 +10,13 @@ node_t * _find_x(node_t * p, int x)
         return p;
     }
     else if (p->data > x) {
-        return _find_x(p->lc, x);
+        node_t * t = _find_x(p->lc, x);
+        if (t) {
+            return t;
+        }
+        else {
+            return p;
+        }
     }
     else {
         return _find_x(p->rc, x);
