@@ -108,15 +108,17 @@ N * read_parent_child()
         N * n = new N(child);
         if (side == 'L' || side == 'l') {
             front->lc = n;
-        } else if (side == 'R' || side == 'r') {
+        } 
+        else if (side == 'R' || side == 'r') {
             front->rc = n;
-        } else {
+        } 
+        else {
             std::cerr << "error child flag: " << side << '\n';
             std::exit(2);
         }
         qu.push(n);
         std::cin >> child >> parent >> side;
-        if (std::cin.eof()) {
+        if (side == term_char || std::cin.eof()) {
             break;
         }
     }
