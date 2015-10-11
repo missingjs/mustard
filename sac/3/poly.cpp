@@ -21,6 +21,7 @@ exp_link_node * read_exp_list()
     for (int i = 0; i < len_c; ++i) {
         exp_link_node * n = new exp_link_node(coef[i], exp[i]);
         last->next = n;
+        last = n;
     }
 
     delete[] coef;

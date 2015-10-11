@@ -19,6 +19,8 @@ struct exp_link_node : public exp_node
     {}
 };
 
+typedef exp_link_node poly_t;
+
 exp_link_node * read_exp_list();
 void free_exp_list(exp_link_node * h);
 void print_exp_list(exp_link_node * h);
