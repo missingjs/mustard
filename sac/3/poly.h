@@ -1,5 +1,5 @@
-#ifndef SAC_3_BASE_H
-#define SAC_3_BASE_H 1
+#ifndef SAC_3_POLY_H
+#define SAC_3_POLY_H 1
 
 struct exp_node
 {

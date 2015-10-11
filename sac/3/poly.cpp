@@ -1,7 +1,7 @@
 #include <iostream>
 
 #include "common/array.h"
-#include "_base_.h"
+#include "poly.h"
 using namespace mustard;
 
 exp_link_node * read_exp_list()
