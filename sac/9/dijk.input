@@ -14,3 +14,12 @@
 5 7 6
 7 6 1
 1
+
+# negative weight, can not handle this
+3
+A B C
+3
+A C 10
+C B -5
+A B 7
+A
